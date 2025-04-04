@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compound Interest Calculator</title>
+    <title>Interactive Compound Interest Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,6 +14,7 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc; /* Tailwind gray-50 */
+            padding-top: 70px; /* Ensure content below fixed nav has padding */
         }
         /* Custom styles for input range sliders */
         input[type="range"] {
@@ -49,61 +49,199 @@
             border: none; /* Remove default border in Firefox */
         }
         /* Add subtle animation */
-        .chart-container, .input-section, .summary-section {
+        .chart-container, .input-section, .summary-section, .explanation-section {
             animation: fadeIn 0.5s ease-in-out;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+        }
+        /* Icon styling */
+        .icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 0.5rem;
+            opacity: 0.7;
+        }
+        .placeholder-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            background-color: #e2e8f0;
+            border-radius: 0.25rem;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 0.5rem;
+        }
+        /* Info section styling */
+        .info-section {
+            background-color: #eff6ff; /* blue-50 */
+            border-left: 4px solid #3b82f6; /* blue-500 */
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.375rem;
+        }
+        .info-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e40af; /* blue-800 */
+            margin-bottom: 0.5rem;
+        }
+        .info-section p, .info-section li {
+            font-size: 0.875rem;
+            color: #1e3a8a; /* blue-900 */
+        }
+        .info-section ul {
+            list-style: disc;
+            list-style-position: inside;
+            margin-top: 0.5rem;
+        }
+        /* Input styling */
+        input[type="number"] {
+            appearance: textfield;
+            -moz-appearance: textfield;
+        }
     </style>
 </head>
-<body class="p-4 md:p-8">
-    <div class="max-w-4xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
+<body>
+    <nav class="bg-indigo-700 text-white p-3 shadow-md">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-lg font-semibold hover:text-indigo-200">Finance Suite Home</a>
+            <div class="hidden sm:flex space-x-3 md:space-x-4">
+                <a href="mortgage.html" class="hover:text-indigo-200 text-xs md:text-sm">Mortgage</a>
+                <a href="compound_interest.html" class="hover:text-indigo-200 text-xs md:text-sm font-bold border-b-2 border-indigo-300">Interest</a>
+                <a href="budget.html" class="hover:text-indigo-200 text-xs md:text-sm">Budget</a>
+                <a href="retirement.html" class="hover:text-indigo-200 text-xs md:text-sm">Retirement</a>
+                <a href="savings_goal.html" class="hover:text-indigo-200 text-xs md:text-sm">Savings Goal</a>
+                <a href="inflation.html" class="hover:text-indigo-200 text-xs md:text-sm">Inflation</a>
+            </div>
+            <div class="sm:hidden">
+                <button id="mobile-menu-button" class="text-white focus:outline-none">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden sm:hidden mt-2 space-y-1">
+            <a href="mortgage.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Mortgage</a>
+            <a href="compound_interest.html" class="block px-3 py-2 rounded-md text-base font-medium bg-indigo-600">Interest</a>
+            <a href="budget.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Budget</a>
+            <a href="retirement.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Retirement</a>
+            <a href="savings_goal.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Savings Goal</a>
+            <a href="inflation.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Inflation</a>
+        </div>
+    </nav>
 
+    <div class="max-w-5xl mx-auto pt-6 px-6 md:px-8 pb-8">
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">Compound Interest Calculator</h1>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 input-section">
-            <div class="space-y-4">
+        <section class="info-section explanation-section">
+            <h3>Why Use This Calculator?</h3>
+            <p>This tool helps you visualize the power of compound interest over time. Whether you're saving for retirement, a major purchase, or simply want to see how your investments might grow, this calculator shows how initial investments combined with regular contributions can build wealth through the power of compounding.</p>
+        </section>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 input-section">
+            <div class="md:col-span-1 space-y-4">
+                <div class="text-xs text-gray-500 mb-2 p-2 bg-gray-100 rounded">
+                    Enter your initial investment, monthly contribution, expected annual return rate, and investment duration to see how your money grows over time.
+                </div>
                 <div>
-                    <label for="initialInvestment" class="block text-sm font-medium text-gray-700 mb-1">Initial Investment ($)</label>
+                    <label for="initialInvestment" class="flex items-center text-sm font-medium text-gray-700 mb-1">
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/dollar-sign.svg" alt="Initial Investment" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'">
+                        Initial Investment ($)
+                    </label>
                     <input type="number" id="initialInvestment" value="1000" min="0" step="100" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                     <input type="range" id="initialInvestmentSlider" min="0" max="100000" step="100" value="1000" class="mt-1 cursor-pointer">
                 </div>
                 <div>
-                    <label for="interestRate" class="block text-sm font-medium text-gray-700 mb-1">Annual Interest Rate (%)</label>
-                    <input type="number" id="interestRate" value="7" min="0" max="30" step="0.1" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                    <input type="range" id="interestRateSlider" min="0" max="30" step="0.1" value="7" class="mt-1 cursor-pointer">
-                </div>
-            </div>
-            <div class="space-y-4">
-                 <div>
-                    <label for="monthlyContribution" class="block text-sm font-medium text-gray-700 mb-1">Monthly Contribution ($)</label>
+                    <label for="monthlyContribution" class="flex items-center text-sm font-medium text-gray-700 mb-1">
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/piggy-bank.svg" alt="Monthly Contribution" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'">
+                        Monthly Contribution ($)
+                    </label>
                     <input type="number" id="monthlyContribution" value="100" min="0" step="50" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                     <input type="range" id="monthlyContributionSlider" min="0" max="5000" step="50" value="100" class="mt-1 cursor-pointer">
                 </div>
                 <div>
-                    <label for="years" class="block text-sm font-medium text-gray-700 mb-1">Investment Duration (Years)</label>
+                    <label for="interestRate" class="flex items-center text-sm font-medium text-gray-700 mb-1">
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/percent.svg" alt="Interest Rate" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'">
+                        Annual Interest Rate (%)
+                    </label>
+                    <input type="number" id="interestRate" value="7" min="0" max="30" step="0.1" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <input type="range" id="interestRateSlider" min="0" max="30" step="0.1" value="7" class="mt-1 cursor-pointer">
+                </div>
+                <div>
+                    <label for="years" class="flex items-center text-sm font-medium text-gray-700 mb-1">
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/calendar-days.svg" alt="Investment Duration" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'">
+                        Investment Duration (Years)
+                    </label>
                     <input type="number" id="years" value="10" min="1" max="50" step="1" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                     <input type="range" id="yearsSlider" min="1" max="50" step="1" value="10" class="mt-1 cursor-pointer">
                 </div>
+                <button id="calculateBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md shadow transition duration-150 ease-in-out">
+                    Update Calculation
+                </button>
+            </div>
+
+            <div class="md:col-span-2 summary-section bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg flex flex-col justify-center items-center text-center shadow-inner">
+                <h2 class="text-xl font-semibold text-indigo-800 mb-4">Projected Growth Summary</h2>
+                <div class="mb-4">
+                    <p class="text-sm text-gray-600">Future Value</p>
+                    <p id="futureValue" class="text-3xl font-bold text-indigo-600">$0.00</p>
+                </div>
+                <div class="w-full grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <p class="text-gray-600">Total Principal</p>
+                        <p id="totalPrincipal" class="text-lg font-medium text-gray-800">$0.00</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Total Interest Earned</p>
+                        <p id="totalInterest" class="text-lg font-medium text-green-600">$0.00</p>
+                    </div>
+                </div>
+                <p id="calculationError" class="text-red-500 text-sm mt-4 hidden">Please enter valid investment details.</p>
             </div>
         </div>
 
-        <div class="summary-section bg-indigo-50 p-4 rounded-lg mb-8 text-center space-y-2">
-             <h2 class="text-lg font-semibold text-indigo-800">Projected Growth Summary</h2>
-             <p class="text-gray-700">Future Value: <strong id="futureValue" class="text-xl text-indigo-600">$0.00</strong></p>
-             <p class="text-sm text-gray-600">Total Principal: <span id="totalPrincipal">$0.00</span></p>
-             <p class="text-sm text-gray-600">Total Interest Earned: <span id="totalInterest" class="text-green-600">$0.00</span></p>
+        <section class="info-section explanation-section">
+            <h3>Understanding the Results</h3>
+            <ul>
+                <li><strong>Future Value:</strong> The total amount your investment will be worth at the end of the specified time period.</li>
+                <li><strong>Total Principal:</strong> The sum of your initial investment and all contributions you've made over time.</li>
+                <li><strong>Total Interest Earned:</strong> The amount generated by compounding interest - this is your investment growth!</li>
+                <li><strong>Chart:</strong> Visualizes how your investment grows over time, showing the increasing impact of compound interest.</li>
+            </ul>
+        </section>
+
+        <div class="chart-section bg-gray-50 p-4 rounded-lg shadow-inner mb-8">
+            <h2 class="text-lg font-semibold text-gray-700 mb-4 text-center">Investment Growth Over Time</h2>
+            <div class="h-64 md:h-80">
+                <canvas id="interestChart"></canvas>
+            </div>
+            <p id="chartError" class="text-center text-gray-500 text-sm mt-2 hidden">Unable to generate chart with current values.</p>
         </div>
 
-        <div class="chart-container bg-gray-50 p-4 rounded-lg shadow-inner" style="height: 400px;">
-             <h2 class="text-lg font-semibold text-gray-700 mb-4 text-center">Investment Growth Over Time</h2>
-            <canvas id="interestChart"></canvas>
-        </div>
+        <section class="info-section explanation-section border-l-yellow-500 bg-yellow-50">
+            <h3 class="text-yellow-800">Important Notes & Limitations</h3>
+            <ul class="text-yellow-900">
+                <li>This calculator assumes a <strong>fixed interest rate</strong> for the entire investment period, which may not reflect real-world market fluctuations.</li>
+                <li>The calculations do not account for <strong>taxes, fees, or inflation</strong> which can significantly impact actual returns.</li>
+                <li>Monthly contributions are assumed to be made at the <strong>beginning of each month</strong> and compounding occurs monthly.</li>
+                <li>These results are for informational purposes only. Consult with a qualified financial advisor for personalized investment advice.</li>
+            </ul>
+        </section>
 
         <div class="mt-8 p-4 border-t border-gray-200 text-sm text-gray-600">
-            <h3 class="font-semibold text-gray-700 mb-2">How it Works:</h3>
+            <h3 class="font-semibold text-gray-700 mb-2">How Compound Interest Works:</h3>
             <p>This calculator shows how your money can grow through compound interest. Interest is calculated on the initial principal and also on the accumulated interest from previous periods. Adjust the sliders or input fields to see how different factors impact your potential returns.</p>
             <ul class="list-disc list-inside mt-2 space-y-1">
                 <li><strong>Initial Investment:</strong> The starting amount of money.</li>
@@ -111,12 +249,21 @@
                 <li><strong>Annual Interest Rate:</strong> The expected yearly growth rate (before compounding).</li>
                 <li><strong>Investment Duration:</strong> How many years you plan to invest.</li>
             </ul>
-            <p class="mt-2 italic">Note: This is a simplified model and does not account for taxes, fees, or inflation. Actual investment returns may vary.</p>
+            <p class="mt-2 italic">The power of compound interest works best over longer time periods. Even small increases in your contribution amount or interest rate can lead to significantly larger final amounts.</p>
         </div>
-
     </div>
 
     <script>
+        // --- Basic Mobile Menu Toggle ---
+        const btn = document.getElementById('mobile-menu-button');
+        const menu = document.getElementById('mobile-menu');
+        // Check if elements exist before adding listener
+        if (btn && menu) {
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
+        }
+
         // Format currency - defined once and reused
         const formatCurrency = (value) => {
             return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
@@ -136,6 +283,9 @@
         const futureValueDisplay = document.getElementById('futureValue');
         const totalPrincipalDisplay = document.getElementById('totalPrincipal');
         const totalInterestDisplay = document.getElementById('totalInterest');
+        const calculationError = document.getElementById('calculationError');
+        const chartError = document.getElementById('chartError');
+        const calculateBtn = document.getElementById('calculateBtn');
 
         const ctx = document.getElementById('interestChart').getContext('2d');
         let interestChart; // Variable to hold the chart instance
@@ -170,6 +320,10 @@
 
         // --- Calculation Logic - Optimized ---
         function calculateCompoundInterest() {
+            // Hide any previous errors
+            calculationError.classList.add('hidden');
+            chartError.classList.add('hidden');
+
             // Parse values once
             const principal = parseFloat(initialInvestmentInput.value) || 0;
             const monthlyContribution = parseFloat(monthlyContributionInput.value) || 0;
@@ -178,6 +332,8 @@
 
             // Basic validation
             if (years <= 0 || annualRate < 0 || principal < 0 || monthlyContribution < 0) {
+                calculationError.textContent = 'Please enter valid positive numbers for all fields.';
+                calculationError.classList.remove('hidden');
                 return { 
                     labels: [], 
                     principalData: [], 
@@ -254,6 +410,16 @@
 
         // --- Chart Configuration - Optimized ---
         function updateChart(data) {
+            // Handle empty data case
+            if (!data.labels.length) {
+                chartError.classList.remove('hidden');
+                if (interestChart) {
+                    interestChart.destroy();
+                    interestChart = null;
+                }
+                return;
+            }
+            
             // Update summary display
             futureValueDisplay.textContent = formatCurrency(data.futureValue);
             totalPrincipalDisplay.textContent = formatCurrency(data.totalPrincipal);
@@ -377,6 +543,11 @@
         function updateCalculator() {
             const data = calculateCompoundInterest();
             updateChart(data);
+        }
+
+        // Add calculate button functionality
+        if (calculateBtn) {
+            calculateBtn.addEventListener('click', updateCalculator);
         }
 
         // Initial calculation
