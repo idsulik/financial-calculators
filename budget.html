@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Budget Planner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Use Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Tailwind gray-50 */
+        }
+        /* Subtle animation */
+        .budget-section, .chart-section, .summary-section {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Style for input fields */
+        input[type="number"] {
+            appearance: textfield; /* Remove spinners in Chrome/Safari */
+            -moz-appearance: textfield; /* Remove spinners in Firefox */
+        }
+        /* Icon styling */
+        .icon {
+            width: 1.25rem; /* Equivalent to h-5 w-5 */
+            height: 1.25rem;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 0.5rem; /* Equivalent to mr-2 */
+            opacity: 0.7;
+        }
+        /* Placeholder image styling */
+         .placeholder-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            background-color: #e2e8f0; /* gray-300 */
+            border-radius: 0.25rem; /* rounded-sm */
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
+
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">Interactive Budget Planner</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 budget-section mb-8">
+
+            <div class="space-y-6">
+                <div>
+                    <label for="monthlyIncome" class="flex items-center text-lg font-semibold text-gray-700 mb-2">
+                         <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/landmark.svg" alt="Income Icon" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'">
+                        Monthly Income ($)
+                    </label>
+                    <input type="number" id="monthlyIncome" placeholder="Enter your monthly income" value="3000" min="0" step="100" class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-lg">
+                </div>
+
+                <div class="chart-section bg-gray-50 p-4 rounded-lg shadow-inner relative h-64 md:h-80">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-2 text-center">Expense Breakdown</h2>
+                    <canvas id="budgetChart"></canvas>
+                    <div id="noExpensesMessage" class="absolute inset-0 flex items-center justify-center text-gray-500 hidden">
+                        Enter expenses to see the chart
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-gray-700 mb-2">Monthly Expenses ($)</h2>
+                <div id="expenseList" class="space-y-3">
+                    </div>
+                 </div>
+        </div>
+
+        <div class="summary-section bg-gradient-to-r from-indigo-50 to-purple-50 p-5 rounded-lg text-center space-y-3 shadow">
+             <h2 class="text-xl font-semibold text-indigo-800">Budget Summary</h2>
+             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                 <div>
+                     <p class="text-sm text-gray-600">Total Income</p>
+                     <p id="summaryIncome" class="text-lg font-medium text-green-600">$0.00</p>
+                 </div>
+                 <div>
+                     <p class="text-sm text-gray-600">Total Expenses</p>
+                     <p id="summaryExpenses" class="text-lg font-medium text-red-600">$0.00</p>
+                 </div>
+                 <div>
+                     <p class="text-sm text-gray-600">Remaining Balance</p>
+                     <p id="summaryBalance" class="text-lg font-bold text-gray-800">$0.00</p>
+                 </div>
+             </div>
+        </div>
+
+         <div class="mt-8 p-4 border-t border-gray-200 text-sm text-gray-600">
+            <h3 class="font-semibold text-gray-700 mb-2">How to Use:</h3>
+            <p>Enter your total monthly income and then fill in your estimated spending for each expense category. The chart and summary will update automatically to show you where your money is going and how much you have left over.</p>
+             <p class="mt-2 italic">Tip: Be realistic with your expense estimates! Tracking helps you understand your spending habits and find areas to save.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DOM Elements ---
+        const monthlyIncomeInput = document.getElementById('monthlyIncome');
+        const expenseListDiv = document.getElementById('expenseList');
+        const summaryIncome = document.getElementById('summaryIncome');
+        const summaryExpenses = document.getElementById('summaryExpenses');
+        const summaryBalance = document.getElementById('summaryBalance');
+        const chartCtx = document.getElementById('budgetChart').getContext('2d');
+        const noExpensesMessage = document.getElementById('noExpensesMessage');
+        let budgetChart; // Chart instance
+
+        // --- Initial Data & Config ---
+        // Define default expense categories with icons
+        const expenseCategories = [
+            { name: 'Housing', icon: 'home', value: 1000 },
+            { name: 'Food & Groceries', icon: 'shopping-cart', value: 400 },
+            { name: 'Transportation', icon: 'car', value: 150 },
+            { name: 'Utilities', icon: 'lightbulb', value: 100 },
+            { name: 'Entertainment', icon: 'popcorn', value: 100 },
+            { name: 'Personal Care', icon: 'sparkles', value: 50 },
+            { name: 'Savings/Debt', icon: 'piggy-bank', value: 200 },
+            { name: 'Other', icon: 'ellipsis', value: 50 }
+        ];
+
+        // Colors for the chart segments (Tailwind colors)
+        const chartColors = [
+            '#ef4444', // red-500
+            '#f97316', // orange-500
+            '#eab308', // yellow-500
+            '#84cc16', // lime-500
+            '#22c55e', // green-500
+            '#10b981', // emerald-500
+            '#06b6d4', // cyan-500
+            '#3b82f6', // blue-500
+            '#8b5cf6', // violet-500
+            '#d946ef', // fuchsia-500
+            '#ec4899'  // pink-500
+        ];
+
+        // --- Helper Functions ---
+        const formatCurrency = (value) => {
+            return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
+        };
+
+        // Function to create an input field for an expense category
+        function createExpenseInput(category) {
+            const div = document.createElement('div');
+            div.className = 'flex items-center space-x-3';
+
+            const label = document.createElement('label');
+            label.htmlFor = `expense_${category.name.replace(/\s+/g, '')}`;
+            label.className = 'w-1/2 text-sm font-medium text-gray-700 flex items-center';
+            // Use Lucide static SVG URLs - include fallback for robustness
+            const iconUrl = `https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/${category.icon}.svg`;
+            label.innerHTML = `
+                <img src="${iconUrl}" alt="${category.name} icon" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'">
+                ${category.name}
+            `;
+
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.id = `expense_${category.name.replace(/\s+/g, '')}`;
+            input.className = 'expense-input w-1/2 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm';
+            input.placeholder = '0.00';
+            input.min = '0';
+            input.step = '10';
+            input.value = category.value > 0 ? category.value : ''; // Set initial value if provided
+            input.dataset.category = category.name; // Store category name
+
+            // Add event listener to update chart/summary on input change
+            input.addEventListener('input', updateBudget);
+
+            div.appendChild(label);
+            div.appendChild(input);
+            return div;
+        }
+
+        // --- Charting Logic ---
+        function updateChart(labels, data) {
+             const hasData = data.some(value => value > 0);
+             noExpensesMessage.classList.toggle('hidden', hasData); // Show message if no data
+
+
+            const chartData = {
+                labels: labels,
+                datasets: [{
+                    label: 'Expenses',
+                    data: data,
+                    backgroundColor: chartColors.slice(0, data.length), // Use defined colors
+                    borderColor: '#ffffff', // White border for segments
+                    borderWidth: 2,
+                    hoverOffset: 4
+                }]
+            };
+
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%', // Makes it a doughnut chart
+                plugins: {
+                    legend: {
+                        display: false // Hide legend as labels are clear enough
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += formatCurrency(context.parsed);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            };
+
+            // Destroy previous chart instance if it exists
+            if (budgetChart) {
+                budgetChart.destroy();
+            }
+
+             // Only create chart if there's data to show
+            if (hasData) {
+                 budgetChart = new Chart(chartCtx, {
+                    type: 'doughnut',
+                    data: chartData,
+                    options: chartOptions
+                });
+            } else {
+                 // Clear canvas if no data
+                chartCtx.clearRect(0, 0, chartCtx.canvas.width, chartCtx.canvas.height);
+            }
+        }
+
+
+        // --- Main Update Logic ---
+        function updateBudget() {
+            // 1. Get Income
+            const income = parseFloat(monthlyIncomeInput.value) || 0;
+
+            // 2. Get Expenses
+            let totalExpenses = 0;
+            const expenseInputs = document.querySelectorAll('.expense-input');
+            const expenseLabels = [];
+            const expenseData = [];
+
+            expenseInputs.forEach(input => {
+                const value = parseFloat(input.value) || 0;
+                if (value > 0) { // Only include categories with spending > 0
+                    totalExpenses += value;
+                    expenseLabels.push(input.dataset.category);
+                    expenseData.push(value);
+                }
+            });
+
+            // 3. Calculate Balance
+            const balance = income - totalExpenses;
+
+            // 4. Update Summary Display
+            summaryIncome.textContent = formatCurrency(income);
+            summaryExpenses.textContent = formatCurrency(totalExpenses);
+            summaryBalance.textContent = formatCurrency(balance);
+
+            // Style the balance based on positive/negative
+            summaryBalance.classList.toggle('text-green-700', balance >= 0);
+            summaryBalance.classList.toggle('text-red-700', balance < 0);
+            summaryBalance.classList.toggle('text-gray-800', balance === 0); // Neutral if zero
+
+            // 5. Update Chart
+            updateChart(expenseLabels, expenseData);
+        }
+
+        // --- Initialization ---
+        function initializePlanner() {
+            // Populate expense list
+            expenseCategories.forEach(category => {
+                const inputElement = createExpenseInput(category);
+                expenseListDiv.appendChild(inputElement);
+            });
+
+            // Add event listener for income input
+            monthlyIncomeInput.addEventListener('input', updateBudget);
+
+            // Initial calculation and chart draw
+            updateBudget();
+        }
+
+        // Run initialization when the DOM is ready
+        document.addEventListener('DOMContentLoaded', initializePlanner);
+
+    </script>
+</body>
+</html>
