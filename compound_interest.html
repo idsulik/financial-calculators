@@ -1,0 +1,386 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compound Interest Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Use Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Tailwind gray-50 */
+        }
+        /* Custom styles for input range sliders */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0; /* Tailwind gray-300 */
+            border-radius: 5px;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+        input[type="range"]:hover {
+            opacity: 1;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #4f46e5; /* Tailwind indigo-600 */
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #4f46e5; /* Tailwind indigo-600 */
+            border-radius: 50%;
+            cursor: pointer;
+            border: none; /* Remove default border in Firefox */
+        }
+        /* Add subtle animation */
+        .chart-container, .input-section, .summary-section {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
+
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">Compound Interest Calculator</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 input-section">
+            <div class="space-y-4">
+                <div>
+                    <label for="initialInvestment" class="block text-sm font-medium text-gray-700 mb-1">Initial Investment ($)</label>
+                    <input type="number" id="initialInvestment" value="1000" min="0" step="100" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <input type="range" id="initialInvestmentSlider" min="0" max="100000" step="100" value="1000" class="mt-1 cursor-pointer">
+                </div>
+                <div>
+                    <label for="interestRate" class="block text-sm font-medium text-gray-700 mb-1">Annual Interest Rate (%)</label>
+                    <input type="number" id="interestRate" value="7" min="0" max="30" step="0.1" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <input type="range" id="interestRateSlider" min="0" max="30" step="0.1" value="7" class="mt-1 cursor-pointer">
+                </div>
+            </div>
+            <div class="space-y-4">
+                 <div>
+                    <label for="monthlyContribution" class="block text-sm font-medium text-gray-700 mb-1">Monthly Contribution ($)</label>
+                    <input type="number" id="monthlyContribution" value="100" min="0" step="50" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <input type="range" id="monthlyContributionSlider" min="0" max="5000" step="50" value="100" class="mt-1 cursor-pointer">
+                </div>
+                <div>
+                    <label for="years" class="block text-sm font-medium text-gray-700 mb-1">Investment Duration (Years)</label>
+                    <input type="number" id="years" value="10" min="1" max="50" step="1" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <input type="range" id="yearsSlider" min="1" max="50" step="1" value="10" class="mt-1 cursor-pointer">
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-section bg-indigo-50 p-4 rounded-lg mb-8 text-center space-y-2">
+             <h2 class="text-lg font-semibold text-indigo-800">Projected Growth Summary</h2>
+             <p class="text-gray-700">Future Value: <strong id="futureValue" class="text-xl text-indigo-600">$0.00</strong></p>
+             <p class="text-sm text-gray-600">Total Principal: <span id="totalPrincipal">$0.00</span></p>
+             <p class="text-sm text-gray-600">Total Interest Earned: <span id="totalInterest" class="text-green-600">$0.00</span></p>
+        </div>
+
+        <div class="chart-container bg-gray-50 p-4 rounded-lg shadow-inner" style="height: 400px;">
+             <h2 class="text-lg font-semibold text-gray-700 mb-4 text-center">Investment Growth Over Time</h2>
+            <canvas id="interestChart"></canvas>
+        </div>
+
+        <div class="mt-8 p-4 border-t border-gray-200 text-sm text-gray-600">
+            <h3 class="font-semibold text-gray-700 mb-2">How it Works:</h3>
+            <p>This calculator shows how your money can grow through compound interest. Interest is calculated on the initial principal and also on the accumulated interest from previous periods. Adjust the sliders or input fields to see how different factors impact your potential returns.</p>
+            <ul class="list-disc list-inside mt-2 space-y-1">
+                <li><strong>Initial Investment:</strong> The starting amount of money.</li>
+                <li><strong>Monthly Contribution:</strong> The additional amount you save each month.</li>
+                <li><strong>Annual Interest Rate:</strong> The expected yearly growth rate (before compounding).</li>
+                <li><strong>Investment Duration:</strong> How many years you plan to invest.</li>
+            </ul>
+            <p class="mt-2 italic">Note: This is a simplified model and does not account for taxes, fees, or inflation. Actual investment returns may vary.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // Format currency - defined once and reused
+        const formatCurrency = (value) => {
+            return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+        };
+
+        // Get DOM elements - cache references
+        const initialInvestmentInput = document.getElementById('initialInvestment');
+        const monthlyContributionInput = document.getElementById('monthlyContribution');
+        const interestRateInput = document.getElementById('interestRate');
+        const yearsInput = document.getElementById('years');
+
+        const initialInvestmentSlider = document.getElementById('initialInvestmentSlider');
+        const monthlyContributionSlider = document.getElementById('monthlyContributionSlider');
+        const interestRateSlider = document.getElementById('interestRateSlider');
+        const yearsSlider = document.getElementById('yearsSlider');
+
+        const futureValueDisplay = document.getElementById('futureValue');
+        const totalPrincipalDisplay = document.getElementById('totalPrincipal');
+        const totalInterestDisplay = document.getElementById('totalInterest');
+
+        const ctx = document.getElementById('interestChart').getContext('2d');
+        let interestChart; // Variable to hold the chart instance
+        let updateTimeoutId; // For debouncing
+
+        // --- Sync Sliders and Inputs with debounce ---
+        function syncSliderInput(slider, input) {
+            slider.addEventListener('input', () => {
+                input.value = slider.value;
+                debouncedUpdate();
+            });
+            
+            input.addEventListener('input', () => {
+                slider.value = input.value;
+                debouncedUpdate();
+            });
+            
+            // Trigger initial sync
+            input.value = slider.value;
+        }
+
+        // Debounce function to limit how often calculations are performed
+        function debouncedUpdate() {
+            clearTimeout(updateTimeoutId);
+            updateTimeoutId = setTimeout(updateCalculator, 100); // 100ms debounce
+        }
+
+        syncSliderInput(initialInvestmentSlider, initialInvestmentInput);
+        syncSliderInput(monthlyContributionSlider, monthlyContributionInput);
+        syncSliderInput(interestRateSlider, interestRateInput);
+        syncSliderInput(yearsSlider, yearsInput);
+
+        // --- Calculation Logic - Optimized ---
+        function calculateCompoundInterest() {
+            // Parse values once
+            const principal = parseFloat(initialInvestmentInput.value) || 0;
+            const monthlyContribution = parseFloat(monthlyContributionInput.value) || 0;
+            const annualRate = parseFloat(interestRateInput.value) || 0;
+            const years = parseInt(yearsInput.value) || 0;
+
+            // Basic validation
+            if (years <= 0 || annualRate < 0 || principal < 0 || monthlyContribution < 0) {
+                return { 
+                    labels: [], 
+                    principalData: [], 
+                    interestData: [], 
+                    futureValue: 0, 
+                    totalPrincipal: 0, 
+                    totalInterest: 0 
+                };
+            }
+
+            const monthlyRate = annualRate / 100 / 12;
+            const totalMonths = years * 12;
+            let currentBalance = principal;
+            let accumulatedInterest = 0;
+            let accumulatedPrincipal = principal;
+
+            // Only store data for each year (not each month)
+            // Initialize with Year 0
+            const balanceData = [{
+                year: 0,
+                principal: principal,
+                interest: 0,
+                total: principal
+            }];
+
+            // Pre-calculate year indices for faster lookup
+            const yearIndices = [];
+            for (let m = 1; m <= totalMonths; m++) {
+                if (m % 12 === 0 || m === totalMonths) {
+                    yearIndices.push(m);
+                }
+            }
+
+            // Calculate for each month, but only store yearly data
+            for (let m = 1; m <= totalMonths; m++) {
+                // Add monthly contribution
+                currentBalance += monthlyContribution;
+                accumulatedPrincipal += monthlyContribution;
+
+                // Calculate and add interest
+                const monthlyInterest = currentBalance * monthlyRate;
+                accumulatedInterest += monthlyInterest;
+                currentBalance += monthlyInterest;
+
+                // Store data only at year boundaries
+                if (yearIndices.includes(m)) {
+                    const yearNum = Math.ceil(m / 12);
+                    balanceData.push({
+                        year: yearNum,
+                        principal: accumulatedPrincipal,
+                        interest: accumulatedInterest,
+                        total: currentBalance
+                    });
+                }
+            }
+
+            // Extract data for chart
+            const labels = balanceData.map(d => `Year ${d.year}`);
+            const principalData = balanceData.map(d => d.principal);
+            const interestData = balanceData.map(d => d.interest);
+            
+            // Get final values
+            const finalData = balanceData[balanceData.length - 1];
+
+            return {
+                labels,
+                principalData,
+                interestData,
+                futureValue: finalData.total,
+                totalPrincipal: finalData.principal,
+                totalInterest: finalData.interest
+            };
+        }
+
+        // --- Chart Configuration - Optimized ---
+        function updateChart(data) {
+            // Update summary display
+            futureValueDisplay.textContent = formatCurrency(data.futureValue);
+            totalPrincipalDisplay.textContent = formatCurrency(data.totalPrincipal);
+            totalInterestDisplay.textContent = formatCurrency(data.totalInterest);
+
+            // Chart configuration
+            const chartConfig = {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [
+                        {
+                            label: 'Total Principal',
+                            data: data.principalData,
+                            backgroundColor: 'rgba(79, 70, 229, 0.5)',
+                            borderColor: 'rgba(79, 70, 229, 1)',
+                            borderWidth: 1,
+                            stack: 'combined',
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'Total Interest Earned',
+                            data: data.interestData,
+                            backgroundColor: 'rgba(22, 163, 74, 0.5)',
+                            borderColor: 'rgba(22, 163, 74, 1)',
+                            borderWidth: 1,
+                            stack: 'combined',
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 300 // Faster animations
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Value ($)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                },
+                                maxTicksLimit: 8 // Limit number of ticks for performance
+                            }
+                        },
+                        x: {
+                            stacked: true,
+                            title: {
+                                display: true,
+                                text: 'Years'
+                            },
+                            ticks: {
+                                maxRotation: 0, // Horizontal labels
+                                autoSkip: true,
+                                maxTicksLimit: 10 // Limit number of labels shown
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += formatCurrency(context.parsed.y);
+                                    }
+                                    return label;
+                                },
+                                footer: function(tooltipItems) {
+                                    let sum = 0;
+                                    tooltipItems.forEach(function(tooltipItem) {
+                                        if(tooltipItem.dataset.stack === 'combined') {
+                                            sum += tooltipItem.parsed.y;
+                                        }
+                                    });
+                                    return 'Total: ' + formatCurrency(sum);
+                                }
+                            }
+                        },
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                boxWidth: 12, // Smaller legend items
+                                padding: 10
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    }
+                }
+            };
+
+            // Efficiently update or create chart
+            if (interestChart) {
+                // Update existing chart (faster than destroying and recreating)
+                interestChart.data.labels = chartConfig.data.labels;
+                interestChart.data.datasets = chartConfig.data.datasets;
+                interestChart.update('none'); // No animation for updates
+            } else {
+                // Create new chart only the first time
+                interestChart = new Chart(ctx, chartConfig);
+            }
+        }
+
+        // Main calculation function
+        function updateCalculator() {
+            const data = calculateCompoundInterest();
+            updateChart(data);
+        }
+
+        // Initial calculation
+        window.addEventListener('DOMContentLoaded', updateCalculator);
+    </script>
+</body>
+</html>
