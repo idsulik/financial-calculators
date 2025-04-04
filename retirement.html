@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retirement Planning Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Tailwind gray-50 */
+        }
+        /* Animation */
+        .input-section, .summary-section, .chart-section {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Input styling */
+        input[type="number"] {
+            appearance: textfield; -moz-appearance: textfield;
+        }
+        /* Icon styling */
+        .icon {
+            width: 1.25rem; height: 1.25rem; display: inline-block;
+            vertical-align: middle; margin-right: 0.5rem; opacity: 0.7;
+        }
+        .placeholder-icon {
+            width: 1.25rem; height: 1.25rem; background-color: #e2e8f0; /* gray-300 */
+            border-radius: 0.25rem; display: inline-block;
+            vertical-align: middle; margin-right: 0.5rem;
+        }
+        /* Ensure chart container has a defined height */
+         .chart-container canvas {
+            max-height: 400px;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-5xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
+
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center">Retirement Planning Calculator</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="md:col-span-1 space-y-4 input-section">
+                 <div>
+                    <label for="currentAge" class="flex items-center text-sm font-medium text-gray-700 mb-1">
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/user.svg" alt="Age" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Current Age
+                    </label>
+                    <input type="number" id="currentAge" value="30" min="18" max="99" step="1" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                 <div>
+                    <label for="retirementAge" class="flex items-center text-sm font-medium text-gray-700 mb-1">
+                         <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/flag.svg" alt="Retirement Age" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Target Retirement Age
+                    </label>
+                    <input type="number" id="retirementAge" value="65" min="19" max="100" step="1" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                 <div>
+                    <label for="currentSavings" class="flex items-center text-sm font-medium text-gray-700 mb-1">
+                         <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/piggy-bank.svg" alt="Savings" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Current Retirement Savings ($)
+                    </label>
+                    <input type="number" id="currentSavings" value="25000" min="0" step="1000" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                 <div>
+                    <label for="monthlyContribution" class="flex items-center text-sm font-medium text-gray-700 mb-1">
+                         <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/calendar-plus.svg" alt="Contribution" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Monthly Contribution ($)
+                    </label>
+                    <input type="number" id="monthlyContribution" value="500" min="0" step="50" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                 <div>
+                    <label for="annualReturn" class="flex items-center text-sm font-medium text-gray-700 mb-1">
+                         <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/trending-up.svg" alt="Return Rate" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Estimated Annual Return (%)
+                    </label>
+                    <input type="number" id="annualReturn" value="7" min="0" max="20" step="0.1" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <button id="calculateBtnRetirement" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md shadow transition duration-150 ease-in-out mt-2">
+                    Calculate Projection
+                </button>
+            </div>
+
+            <div class="md:col-span-2 summary-section bg-gradient-to-r from-green-50 to-teal-50 p-6 rounded-lg flex flex-col justify-center items-center text-center shadow-inner">
+                <h2 class="text-xl font-semibold text-teal-800 mb-4">Retirement Projection</h2>
+                <div class="mb-6">
+                    <p class="text-sm text-gray-600">Estimated Nest Egg at Retirement</p>
+                    <p id="estimatedNestEgg" class="text-3xl font-bold text-teal-600">$0.00</p>
+                </div>
+                <div class="w-full grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm mb-6">
+                    <div>
+                        <p class="text-gray-600">Total Contributions</p>
+                        <p id="totalContributions" class="text-lg font-medium text-gray-800">$0.00</p>
+                    </div>
+                     <div>
+                        <p class="text-gray-600">Total Investment Growth</p>
+                        <p id="totalGrowth" class="text-lg font-medium text-green-600">$0.00</p>
+                    </div>
+                     <div>
+                        <p class="text-gray-600">Est. Annual Income (4% Rule)</p>
+                        <p id="estimatedIncome" class="text-lg font-medium text-blue-600">$0.00</p>
+                    </div>
+                </div>
+                 <p id="retirementCalculationError" class="text-red-500 text-sm mt-2 hidden">Please enter valid details.</p>
+                 <p class="text-xs text-gray-500 italic mt-4">Note: Projections are estimates based on inputs and do not guarantee future results. Does not account for taxes or inflation unless specified.</p>
+            </div>
+        </div>
+
+        <div class="chart-section bg-gray-50 p-4 rounded-lg shadow-inner chart-container">
+             <h2 class="text-lg font-semibold text-gray-700 mb-4 text-center">Savings Growth Over Time</h2>
+            <canvas id="retirementChart"></canvas>
+            <p id="retirementChartError" class="text-center text-gray-500 text-sm mt-2 hidden">Calculate projection to view the chart.</p>
+        </div>
+
+         <div class="mt-8 p-4 border-t border-gray-200 text-sm text-gray-600">
+            <h3 class="font-semibold text-gray-700 mb-2">Understanding Your Retirement Projection:</h3>
+            <ul class="list-disc list-inside space-y-1">
+                <li><strong>Estimated Nest Egg:</strong> The projected total value of your retirement savings at your target retirement age.</li>
+                <li><strong>Total Contributions:</strong> The total amount you put in (initial savings + all monthly contributions).</li>
+                <li><strong>Total Investment Growth:</strong> The estimated amount earned through investment returns.</li>
+                <li><strong>Estimated Annual Income (4% Rule):</strong> A common guideline suggesting you can safely withdraw 4% of your nest egg each year in retirement. This provides a rough estimate of potential income.</li>
+            </ul>
+            <p class="mt-2 italic">Remember that inflation will reduce the purchasing power of future money. Consider consulting a financial advisor for personalized planning.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DOM Elements ---
+        const currentAgeInput = document.getElementById('currentAge');
+        const retirementAgeInput = document.getElementById('retirementAge');
+        const currentSavingsInput = document.getElementById('currentSavings');
+        const monthlyContributionInput = document.getElementById('monthlyContribution');
+        const annualReturnInput = document.getElementById('annualReturn');
+        // const inflationRateInput = document.getElementById('inflationRate'); // Optional
+        const calculateBtnRetirement = document.getElementById('calculateBtnRetirement');
+
+        const estimatedNestEggDisplay = document.getElementById('estimatedNestEgg');
+        const totalContributionsDisplay = document.getElementById('totalContributions');
+        const totalGrowthDisplay = document.getElementById('totalGrowth');
+        const estimatedIncomeDisplay = document.getElementById('estimatedIncome');
+        const retirementCalculationError = document.getElementById('retirementCalculationError');
+        const retirementChartError = document.getElementById('retirementChartError');
+
+        const retirementChartCtx = document.getElementById('retirementChart').getContext('2d');
+        let retirementChart; // Chart instance
+
+        // --- Helper Functions ---
+        const formatCurrency = (value) => {
+            if (!isFinite(value)) return '$ --';
+            return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }); // Show whole dollars for large numbers
+        };
+        const formatCurrencyDetailed = (value) => { // For smaller numbers like income
+             if (!isFinite(value)) return '$ --';
+            return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
+        };
+
+
+        // --- Calculation Logic ---
+        function calculateRetirementProjection() {
+            // Clear previous errors/states
+            retirementCalculationError.classList.add('hidden');
+            retirementChartError.classList.add('hidden');
+
+            // Get inputs
+            const currentAge = parseInt(currentAgeInput.value);
+            const retirementAge = parseInt(retirementAgeInput.value);
+            const currentSavings = parseFloat(currentSavingsInput.value) || 0;
+            const monthlyContribution = parseFloat(monthlyContributionInput.value) || 0;
+            const annualReturnRate = parseFloat(annualReturnInput.value) / 100 || 0;
+            // const inflationRate = parseFloat(inflationRateInput.value) / 100 || 0; // Optional
+
+            // Validate inputs
+            if (isNaN(currentAge) || isNaN(retirementAge) || isNaN(currentSavings) || isNaN(monthlyContribution) || isNaN(annualReturnRate) ||
+                currentAge <= 0 || retirementAge <= currentAge || currentSavings < 0 || monthlyContribution < 0 || annualReturnRate < 0) {
+                retirementCalculationError.textContent = 'Please enter valid ages, savings, contribution, and return rate.';
+                retirementCalculationError.classList.remove('hidden');
+                // Reset displays
+                estimatedNestEggDisplay.textContent = '$0';
+                totalContributionsDisplay.textContent = '$0';
+                totalGrowthDisplay.textContent = '$0';
+                estimatedIncomeDisplay.textContent = '$0.00';
+                if (retirementChart) retirementChart.destroy();
+                retirementChartError.textContent = 'Invalid input. Cannot generate chart.';
+                retirementChartError.classList.remove('hidden');
+                return;
+            }
+
+            const yearsToGrow = retirementAge - currentAge;
+            let balance = currentSavings;
+            let totalPrincipal = currentSavings; // Start with initial savings
+            const yearlyData = []; // { year, age, principal, growth, total }
+
+             // Record initial state (Year 0 / Current Age)
+            yearlyData.push({
+                year: 0,
+                age: currentAge,
+                principal: totalPrincipal,
+                growth: 0,
+                total: balance
+            });
+
+
+            let cumulativeGrowth = 0;
+
+            for (let year = 1; year <= yearsToGrow; year++) {
+                let yearlyContribution = monthlyContribution * 12;
+                totalPrincipal += yearlyContribution; // Add contributions for the year
+
+                // Add contributions at the start of the year before calculating growth
+                balance += yearlyContribution;
+
+                // Calculate growth for the year
+                let growthThisYear = balance * annualReturnRate;
+                cumulativeGrowth += growthThisYear;
+
+                // Add growth to balance
+                balance += growthThisYear;
+
+                // Store data for the chart
+                yearlyData.push({
+                    year: year,
+                    age: currentAge + year,
+                    principal: totalPrincipal,
+                    growth: cumulativeGrowth,
+                    total: balance
+                });
+            }
+
+            const finalNestEgg = balance;
+            const totalGrowth = cumulativeGrowth;
+            const estimatedAnnualIncome = finalNestEgg * 0.04; // 4% withdrawal rule
+
+            // Update Summary Display
+            estimatedNestEggDisplay.textContent = formatCurrency(finalNestEgg);
+            totalContributionsDisplay.textContent = formatCurrency(totalPrincipal);
+            totalGrowthDisplay.textContent = formatCurrency(totalGrowth);
+            estimatedIncomeDisplay.textContent = formatCurrencyDetailed(estimatedAnnualIncome);
+
+            // Update Chart
+            updateRetirementChart(yearlyData);
+        }
+
+        // --- Charting Logic ---
+        function updateRetirementChart(yearlyData) {
+             if (!yearlyData || yearlyData.length <= 1) { // Need at least initial state + 1 year
+                if (retirementChart) retirementChart.destroy();
+                retirementChartError.textContent = 'Not enough data to display chart.';
+                retirementChartError.classList.remove('hidden');
+                return;
+            }
+            retirementChartError.classList.add('hidden'); // Hide error if data is valid
+
+
+            const labels = yearlyData.map(data => `Age ${data.age}`);
+            const principalData = yearlyData.map(data => data.principal);
+            const growthData = yearlyData.map(data => data.growth);
+
+            const chartData = {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Total Contributions',
+                        data: principalData,
+                        backgroundColor: 'rgba(79, 70, 229, 0.5)', // Indigo-600
+                        borderColor: 'rgba(79, 70, 229, 1)',
+                        borderWidth: 1,
+                        fill: true,
+                        stack: 'combined',
+                        pointRadius: 1,
+                        pointHoverRadius: 4,
+                        tension: 0.1 // Slight curve
+                    },
+                    {
+                        label: 'Total Growth',
+                        data: growthData,
+                        backgroundColor: 'rgba(5, 150, 105, 0.5)', // Emerald-600
+                        borderColor: 'rgba(5, 150, 105, 1)',
+                        borderWidth: 1,
+                        fill: true,
+                        stack: 'combined',
+                        pointRadius: 1,
+                        pointHoverRadius: 4,
+                        tension: 0.1 // Slight curve
+                    }
+                ]
+            };
+
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                     x: {
+                        stacked: true,
+                        title: { display: true, text: 'Age' }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        title: { display: true, text: 'Projected Value ($)' },
+                        ticks: {
+                            callback: function(value) { return formatCurrency(value); }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) { label += ': '; }
+                                label += formatCurrency(context.parsed.y);
+                                return label;
+                            },
+                            footer: function(tooltipItems) {
+                                let sum = 0;
+                                tooltipItems.forEach(function(tooltipItem) {
+                                    if(tooltipItem.dataset.stack === 'combined') {
+                                         sum += tooltipItem.parsed.y;
+                                    }
+                                });
+                                return 'Total Value: ' + formatCurrency(sum);
+                            }
+                        }
+                    },
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                 interaction: {
+                    mode: 'index',
+                    intersect: false
+                }
+            };
+
+            // Destroy previous chart instance if it exists
+            if (retirementChart) {
+                retirementChart.destroy();
+            }
+
+            // Create new chart instance
+            // Use 'bar' type for reliable stacking in Chart.js v3+ (visually acts like stacked area here)
+            retirementChart = new Chart(retirementChartCtx, {
+                type: 'bar',
+                data: chartData,
+                options: chartOptions
+            });
+        }
+
+
+        // --- Event Listeners ---
+        calculateBtnRetirement.addEventListener('click', calculateRetirementProjection);
+
+        // --- Initial State ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set initial display state
+            estimatedNestEggDisplay.textContent = '$0';
+            totalContributionsDisplay.textContent = '$0';
+            totalGrowthDisplay.textContent = '$0';
+            estimatedIncomeDisplay.textContent = '$0.00';
+            retirementChartError.textContent = 'Enter details and click Calculate to view projection.';
+            retirementChartError.classList.remove('hidden');
+            // Optional: Run calculation on load with default values
+            // calculateRetirementProjection();
+        });
+
+    </script>
+</body>
+</html>
