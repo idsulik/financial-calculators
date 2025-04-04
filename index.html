@@ -11,7 +11,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* Tailwind gray-100 */
+            background-color: #f3f4f6; /* gray-100 */
         }
         .calculator-card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -40,13 +40,13 @@
     </style>
 </head>
 <body class="p-6 md:p-10">
-    <div class="max-w-5xl mx-auto"> 
+    <div class="max-w-6xl mx-auto">
         <header class="text-center mb-10">
             <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Financial Calculators Suite</h1>
             <p class="text-md text-gray-600">A collection of useful tools to help manage your finances.</p>
         </header>
 
-        <main class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-8">
+        <main class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
 
             <a href="mortgage.html" class="calculator-card block bg-white p-6 rounded-xl shadow hover:shadow-lg border border-gray-200">
                 <div class="flex items-center mb-3">
@@ -74,10 +74,23 @@
 
              <a href="retirement.html" class="calculator-card block bg-white p-6 rounded-xl shadow hover:shadow-lg border border-gray-200">
                  <div class="flex items-center mb-3">
-                     <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/flag.svg" alt="Retirement Icon" class="icon" style="color: #0d9488;" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'">
-                    <h2 class="text-xl font-semibold text-gray-700">Retirement Planner</h2>
+                     <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/flag.svg" alt="Retirement Icon" class="icon" style="color: #0d9488;" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> <h2 class="text-xl font-semibold text-gray-700">Retirement Planner</h2>
                 </div>
                 <p class="text-sm text-gray-600">Project your retirement savings growth and estimate potential retirement income.</p>
+            </a>
+
+             <a href="savings_goal.html" class="calculator-card block bg-white p-6 rounded-xl shadow hover:shadow-lg border border-gray-200">
+                 <div class="flex items-center mb-3">
+                     <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/target.svg" alt="Savings Goal Icon" class="icon" style="color: #a855f7;" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> <h2 class="text-xl font-semibold text-gray-700">Savings Goal Calculator</h2>
+                </div>
+                <p class="text-sm text-gray-600">Calculate the monthly savings needed to reach a specific financial target by a set date.</p>
+            </a>
+
+             <a href="inflation.html" class="calculator-card block bg-white p-6 rounded-xl shadow hover:shadow-lg border border-gray-200">
+                 <div class="flex items-center mb-3">
+                     <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/gauge.svg" alt="Inflation Icon" class="icon" style="color: #ea580c;" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> <h2 class="text-xl font-semibold text-gray-700">Inflation Calculator</h2>
+                </div>
+                <p class="text-sm text-gray-600">Estimate the future cost of goods or services based on an average inflation rate.</p>
             </a>
 
         </main>
