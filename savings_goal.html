@@ -13,9 +13,10 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc; /* gray-50 */
+            padding-top: 70px; /* Ensure content below fixed nav has padding */
         }
         /* Animation */
-        .input-section, .summary-section, .chart-section {
+        .input-section, .summary-section, .chart-section, .explanation-section {
             animation: fadeIn 0.5s ease-in-out;
         }
         @keyframes fadeIn {
@@ -37,43 +38,110 @@
             vertical-align: middle; margin-right: 0.5rem;
         }
         /* Chart container height */
-         .chart-container canvas {
+        .chart-container canvas {
             max-height: 400px;
+        }
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+        }
+        /* Info section styling */
+        .info-section {
+            background-color: #eff6ff; /* blue-50 */
+            border-left: 4px solid #3b82f6; /* blue-500 */
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.375rem;
+        }
+        .info-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e40af; /* blue-800 */
+            margin-bottom: 0.5rem;
+        }
+        .info-section p, .info-section li {
+            font-size: 0.875rem;
+            color: #1e3a8a; /* blue-900 */
+        }
+        .info-section ul {
+            list-style: disc;
+            list-style-position: inside;
+            margin-top: 0.5rem;
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
-    <div class="max-w-5xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
+<body>
+    <nav class="bg-indigo-700 text-white p-3 shadow-md">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-lg font-semibold hover:text-indigo-200">Finance Suite Home</a>
+            <div class="hidden sm:flex space-x-3 md:space-x-4">
+                <a href="mortgage.html" class="hover:text-indigo-200 text-xs md:text-sm">Mortgage</a>
+                <a href="compound_interest.html" class="hover:text-indigo-200 text-xs md:text-sm">Interest</a>
+                <a href="budget.html" class="hover:text-indigo-200 text-xs md:text-sm">Budget</a>
+                <a href="retirement.html" class="hover:text-indigo-200 text-xs md:text-sm">Retirement</a>
+                <a href="savings_goal.html" class="hover:text-indigo-200 text-xs md:text-sm font-bold border-b-2 border-indigo-300">Savings Goal</a>
+                <a href="inflation.html" class="hover:text-indigo-200 text-xs md:text-sm">Inflation</a>
+            </div>
+            <div class="sm:hidden">
+                <button id="mobile-menu-button" class="text-white focus:outline-none">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden sm:hidden mt-2 space-y-1">
+            <a href="mortgage.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Mortgage</a>
+            <a href="compound_interest.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Interest</a>
+            <a href="budget.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Budget</a>
+            <a href="retirement.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Retirement</a>
+            <a href="savings_goal.html" class="block px-3 py-2 rounded-md text-base font-medium bg-indigo-600">Savings Goal</a>
+            <a href="inflation.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Inflation</a>
+        </div>
+    </nav>
 
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center">Savings Goal Calculator</h1>
+    <div class="max-w-5xl mx-auto pt-6 px-6 md:px-8 pb-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">Savings Goal Calculator</h1>
+
+        <section class="info-section explanation-section">
+            <h3>Why Use This Calculator?</h3>
+            <p>This calculator helps you determine how much you need to save each month to reach a specific financial goal. Whether you're saving for a down payment, a vacation, education, or any other important milestone, this tool will show you exactly what it takes to get there and how compound interest can help along the way.</p>
+        </section>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="md:col-span-1 space-y-4 input-section">
-                 <div>
+                <div class="text-xs text-gray-500 mb-2 p-2 bg-gray-100 rounded">
+                    Enter your target savings goal, current savings, timeline, and expected interest rate to calculate the required monthly contribution.
+                </div>
+                <div>
                     <label for="savingsGoal" class="flex items-center text-sm font-medium text-gray-700 mb-1">
                         <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/target.svg" alt="Goal" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Savings Goal ($)
                     </label>
                     <input type="number" id="savingsGoal" value="50000" min="1" step="1000" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
-                 <div>
+                <div>
                     <label for="currentSavings" class="flex items-center text-sm font-medium text-gray-700 mb-1">
-                         <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/piggy-bank.svg" alt="Current Savings" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Current Amount Saved ($)
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/piggy-bank.svg" alt="Current Savings" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Current Amount Saved ($)
                     </label>
                     <input type="number" id="currentSavings" value="5000" min="0" step="500" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
-                 <div>
+                <div>
                     <label for="yearsToSave" class="flex items-center text-sm font-medium text-gray-700 mb-1">
-                         <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/calendar-clock.svg" alt="Time" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Years to Save
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/calendar-clock.svg" alt="Time" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Years to Save
                     </label>
                     <input type="number" id="yearsToSave" value="5" min="1" max="50" step="1" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
-                 <div>
+                <div>
                     <label for="annualRate" class="flex items-center text-sm font-medium text-gray-700 mb-1">
-                         <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/percent.svg" alt="Rate" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Estimated Annual Interest Rate (%)
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/percent.svg" alt="Rate" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Estimated Annual Interest Rate (%)
                     </label>
                     <input type="number" id="annualRate" value="4" min="0" max="20" step="0.1" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
-                 <button id="calculateBtnSavings" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md shadow transition duration-150 ease-in-out mt-2">
+                <button id="calculateBtnSavings" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md shadow transition duration-150 ease-in-out mt-2">
                     Calculate Monthly Savings
                 </button>
             </div>
@@ -83,45 +151,77 @@
                 <div class="mb-6">
                     <p class="text-sm text-gray-600">Required Monthly Savings</p>
                     <p id="monthlySavingsNeeded" class="text-3xl font-bold text-indigo-600">$0.00</p>
-                     <p id="goalMessage" class="text-sm text-green-600 font-medium mt-1 hidden"></p>
+                    <p id="goalMessage" class="text-sm text-green-600 font-medium mt-1 hidden"></p>
                 </div>
                 <div class="w-full grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm mb-6">
                     <div>
                         <p class="text-gray-600">Target Goal</p>
                         <p id="summaryGoal" class="text-lg font-medium text-gray-800">$0.00</p>
                     </div>
-                     <div>
+                    <div>
                         <p class="text-gray-600">Total Contributions Needed</p>
                         <p id="summaryContributions" class="text-lg font-medium text-gray-800">$0.00</p>
                     </div>
-                     <div>
+                    <div>
                         <p class="text-gray-600">Estimated Total Interest</p>
                         <p id="summaryInterest" class="text-lg font-medium text-green-600">$0.00</p>
                     </div>
                 </div>
-                 <p id="savingsCalculationError" class="text-red-500 text-sm mt-2 hidden">Please enter valid details.</p>
+                <p id="savingsCalculationError" class="text-red-500 text-sm mt-2 hidden">Please enter valid details.</p>
             </div>
         </div>
 
-        <div class="chart-section bg-gray-50 p-4 rounded-lg shadow-inner chart-container">
-             <h2 class="text-lg font-semibold text-gray-700 mb-4 text-center">Projected Growth Towards Goal</h2>
+        <section class="info-section explanation-section">
+            <h3>Understanding Your Savings Projection</h3>
+            <ul>
+                <li><strong>Required Monthly Savings:</strong> This is the fixed amount you need to save each month to reach your goal in the specified time period.</li>
+                <li><strong>Target Goal:</strong> The total amount you want to save.</li>
+                <li><strong>Total Contributions Needed:</strong> The sum of all monthly contributions you'll make (excluding your current savings).</li>
+                <li><strong>Estimated Total Interest:</strong> The amount you'll earn from interest over the savings period.</li>
+            </ul>
+        </section>
+
+        <div class="chart-section bg-gray-50 p-4 rounded-lg shadow-inner chart-container mb-8">
+            <h2 class="text-lg font-semibold text-gray-700 mb-4 text-center">Projected Growth Towards Goal</h2>
             <canvas id="savingsChart"></canvas>
             <p id="savingsChartError" class="text-center text-gray-500 text-sm mt-2 hidden">Calculate savings needed to view the chart.</p>
         </div>
 
-         <div class="mt-8 p-4 border-t border-gray-200 text-sm text-gray-600">
-            <h3 class="font-semibold text-gray-700 mb-2">How It Works:</h3>
-            <ul class="list-disc list-inside space-y-1">
-                <li>Enter your desired savings goal, how much you've already saved, the time you have, and an estimated annual interest rate.</li>
-                <li>The calculator determines the fixed amount you need to save each month to reach your goal.</li>
-                <li>The chart visualizes how your savings (initial + contributions + interest) grow over time compared to your target.</li>
+        <section class="info-section explanation-section border-l-yellow-500 bg-yellow-50">
+            <h3 class="text-yellow-800">Important Notes & Limitations</h3>
+            <ul class="text-yellow-900">
+                <li>This calculator assumes a <strong>consistent monthly contribution</strong> throughout the entire savings period.</li>
+                <li>It uses a <strong>fixed interest rate</strong> that may not reflect real-world fluctuations in investment returns.</li>
+                <li>The calculation does not account for <strong>inflation</strong>, which will reduce the purchasing power of your goal amount over time.</li>
+                <li>The results do not factor in <strong>taxes on interest earnings</strong>, which may affect your actual savings growth.</li>
+                <li>These projections are for <strong>informational purposes only</strong> and do not guarantee future results.</li>
             </ul>
-            <p class="mt-2 italic">Note: This assumes consistent monthly savings and a fixed interest rate. Actual returns may vary. Does not account for taxes or inflation.</p>
-        </div>
+        </section>
 
+        <div class="mt-8 p-4 border-t border-gray-200 text-sm text-gray-600">
+            <h3 class="font-semibold text-gray-700 mb-2">Savings Goal Tips:</h3>
+            <ul class="list-disc list-inside space-y-1">
+                <li><strong>Break it Down:</strong> Convert your annual savings goal into smaller weekly or monthly targets to make it more manageable.</li>
+                <li><strong>Automate Your Savings:</strong> Set up automatic transfers to your savings account on paydays to ensure consistency.</li>
+                <li><strong>Start Early:</strong> The sooner you begin saving, the less you need to set aside each month due to compound interest.</li>
+                <li><strong>Increase Gradually:</strong> If the calculated monthly amount seems too high, start with what you can afford now and gradually increase your contributions.</li>
+                <li><strong>Review Periodically:</strong> Check your progress every few months and adjust your contributions as needed to stay on track.</li>
+            </ul>
+            <p class="mt-2 italic">Remember: Consistent savings, even in small amounts, can lead to significant growth over time when combined with compound interest.</p>
+        </div>
     </div>
 
     <script>
+        // --- Basic Mobile Menu Toggle ---
+        const btn = document.getElementById('mobile-menu-button');
+        const menu = document.getElementById('mobile-menu');
+        // Check if elements exist before adding listener
+        if (btn && menu) {
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
+        }
+        
         // --- DOM Elements ---
         const savingsGoalInput = document.getElementById('savingsGoal');
         const currentSavingsInput = document.getElementById('currentSavings');
@@ -139,18 +239,38 @@
 
         const savingsChartCtx = document.getElementById('savingsChart').getContext('2d');
         let savingsChart; // Chart instance
+        let updateTimeoutId; // For debouncing
 
         // --- Helper Functions ---
         const formatCurrency = (value) => {
             if (!isFinite(value)) return '$ --';
             // Use more precision for monthly savings
             if (Math.abs(value) < 10000) {
-                 return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
+                return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
             }
             // Use less precision for large goal numbers
             return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
         };
 
+        // Debounce function to limit calculation frequency
+        function debouncedUpdate() {
+            clearTimeout(updateTimeoutId);
+            updateTimeoutId = setTimeout(calculateSavingsGoal, 300); // 300ms debounce
+        }
+
+        // Add input event listeners with debounce
+        function setupInputListeners() {
+            const inputs = [
+                savingsGoalInput,
+                currentSavingsInput,
+                yearsToSaveInput,
+                annualRateInput
+            ];
+            
+            inputs.forEach(input => {
+                input.addEventListener('input', debouncedUpdate);
+            });
+        }
 
         // --- Calculation Logic ---
         function calculateSavingsGoal() {
@@ -176,13 +296,13 @@
                 summaryGoalDisplay.textContent = '$0';
                 summaryContributionsDisplay.textContent = '$0';
                 summaryInterestDisplay.textContent = '$0';
-                 if (savingsChart) savingsChart.destroy();
-                 savingsChartError.textContent = 'Invalid input. Cannot generate chart.';
-                 savingsChartError.classList.remove('hidden');
+                if (savingsChart) savingsChart.destroy();
+                savingsChartError.textContent = 'Invalid input. Cannot generate chart.';
+                savingsChartError.classList.remove('hidden');
                 return;
             }
 
-             if (presentValue >= futureValue) {
+            if (presentValue >= futureValue) {
                 // Goal already reached or exceeded
                 monthlySavingsNeededDisplay.textContent = formatCurrency(0);
                 goalMessageDisplay.textContent = 'Goal already reached!';
@@ -190,12 +310,11 @@
                 summaryGoalDisplay.textContent = formatCurrency(futureValue);
                 summaryContributionsDisplay.textContent = formatCurrency(0); // No further contributions needed
                 summaryInterestDisplay.textContent = formatCurrency(0); // No further interest calculated here
-                 if (savingsChart) savingsChart.destroy(); // Clear chart if goal met
-                 savingsChartError.textContent = 'Goal already reached. No projection needed.';
-                 savingsChartError.classList.remove('hidden');
+                if (savingsChart) savingsChart.destroy(); // Clear chart if goal met
+                savingsChartError.textContent = 'Goal already reached. No projection needed.';
+                savingsChartError.classList.remove('hidden');
                 return;
             }
-
 
             const periods = years * 12; // n
             const monthlyRate = annualRate / 12; // r
@@ -212,13 +331,12 @@
                 monthlyPayment = (futureValue - presentValue * factor) / ((factor - 1) / monthlyRate);
             }
 
-             // Check if calculated PMT is negative (means goal reached without further saving)
-             if (monthlyPayment <= 0) {
+            // Check if calculated PMT is negative (means goal reached without further saving)
+            if (monthlyPayment <= 0) {
                 monthlyPayment = 0;
                 goalMessageDisplay.textContent = 'Goal will be reached with current savings and interest alone!';
                 goalMessageDisplay.classList.remove('hidden');
-             }
-
+            }
 
             // --- Simulate growth for chart and summary ---
             let balance = presentValue;
@@ -237,8 +355,8 @@
 
                 balance += interestThisMonth; // Add interest
 
-                 // Store data point
-                 growthData.push({
+                // Store data point
+                growthData.push({
                     month: month,
                     // Cumulative values for stacked chart:
                     contributions: presentValue + totalContributions,
@@ -247,13 +365,11 @@
                 });
             }
 
-
             // Update Summary Display
             monthlySavingsNeededDisplay.textContent = formatCurrency(monthlyPayment);
             summaryGoalDisplay.textContent = formatCurrency(futureValue);
             summaryContributionsDisplay.textContent = formatCurrency(totalContributions); // Only the needed contributions
             summaryInterestDisplay.textContent = formatCurrency(totalInterest);
-
 
             // Update Chart
             updateSavingsChart(growthData, futureValue);
@@ -261,7 +377,7 @@
 
         // --- Charting Logic ---
         function updateSavingsChart(growthData, goalAmount) {
-             if (!growthData || growthData.length <= 1) {
+            if (!growthData || growthData.length <= 1) {
                 if (savingsChart) savingsChart.destroy();
                 savingsChartError.textContent = 'Not enough data to display chart.';
                 savingsChartError.classList.remove('hidden');
@@ -269,10 +385,19 @@
             }
             savingsChartError.classList.add('hidden');
 
-            const labels = growthData.map(data => `Month ${data.month}`);
-            const contributionData = growthData.map(data => data.contributions); // Initial + added
-            const interestData = growthData.map(data => data.interest);
-            const goalLineData = Array(growthData.length).fill(goalAmount); // Line showing the goal
+            // For better chart readability, we'll use year labels instead of showing every month
+            const filteredData = growthData.filter((data, index) => 
+                index === 0 || index === growthData.length - 1 || index % 12 === 0
+            );
+            
+            const labels = filteredData.map(data => {
+                if (data.month === 0) return 'Start';
+                return `Year ${Math.ceil(data.month / 12)}`;
+            });
+            
+            const contributionData = filteredData.map(data => data.contributions); // Initial + added
+            const interestData = filteredData.map(data => data.interest);
+            const goalLineData = Array(filteredData.length).fill(goalAmount); // Line showing the goal
 
             const chartData = {
                 labels: labels,
@@ -297,7 +422,7 @@
                         stack: 'savingsStack',
                         order: 1 // Render on top
                     },
-                     {
+                    {
                         label: 'Savings Goal',
                         data: goalLineData,
                         borderColor: 'rgba(220, 38, 38, 0.8)', // Red-600
@@ -314,18 +439,22 @@
             const chartOptions = {
                 responsive: true,
                 maintainAspectRatio: false,
-                 // Use 'bar' type for stacking, but line for goal
+                animation: {
+                    duration: 300 // Faster animations
+                },
+                // Use 'bar' type for stacking, but line for goal
                 scales: {
-                     x: {
+                    x: {
                         stacked: true,
-                        title: { display: true, text: 'Months' }
+                        title: { display: true, text: 'Time Period' }
                     },
                     y: {
                         stacked: true,
                         beginAtZero: true,
                         title: { display: true, text: 'Projected Value ($)' },
                         ticks: {
-                            callback: function(value) { return formatCurrency(value); }
+                            callback: function(value) { return formatCurrency(value); },
+                            maxTicksLimit: 8 // Limit number of ticks for better readability
                         }
                     }
                 },
@@ -334,57 +463,75 @@
                         mode: 'index',
                         intersect: false,
                         callbacks: {
-                             label: function(context) {
+                            label: function(context) {
                                 // Don't show tooltip for the goal line itself
                                 if (context.dataset.label === 'Savings Goal') {
-                                    return null; // Hide tooltip label for goal line
+                                    return 'Target: ' + formatCurrency(context.parsed.y);
                                 }
                                 let label = context.dataset.label || '';
                                 if (label) { label += ': '; }
                                 label += formatCurrency(context.parsed.y);
                                 return label;
                             },
-                             footer: function(tooltipItems) {
+                            footer: function(tooltipItems) {
                                 let sum = 0;
                                 tooltipItems.forEach(function(tooltipItem) {
-                                     // Sum only the stacked datasets
+                                    // Sum only the stacked datasets
                                     if(tooltipItem.dataset.stack === 'savingsStack') {
-                                         sum += tooltipItem.parsed.y;
+                                        sum += tooltipItem.parsed.y;
                                     }
                                 });
-                                // Don't show footer if only goal line is hovered (or no items)
-                                if (tooltipItems.length === 0 || (tooltipItems.length === 1 && tooltipItems[0].dataset.label === 'Savings Goal')) {
-                                     return '';
+                                
+                                // Find if we have the goal line in this tooltip
+                                const goalItem = tooltipItems.find(item => item.dataset.label === 'Savings Goal');
+                                if (goalItem && sum > 0) {
+                                    const goalAmount = goalItem.parsed.y;
+                                    const progress = Math.min(100, Math.round((sum / goalAmount) * 100));
+                                    return [
+                                        'Total Value: ' + formatCurrency(sum),
+                                        `Progress: ${progress}% of goal`
+                                    ];
+                                } else if (sum > 0) {
+                                    return 'Total Value: ' + formatCurrency(sum);
                                 }
-                                return 'Total Value: ' + formatCurrency(sum);
+                                return '';
                             }
                         }
                     },
                     legend: {
                         position: 'top',
+                        labels: {
+                            boxWidth: 12, // Smaller legend items
+                            padding: 10
+                        }
                     }
                 },
-                 interaction: {
-                    mode: 'index',
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
                     intersect: false
                 }
             };
 
+            // Efficiently update or create chart
             if (savingsChart) {
-                savingsChart.destroy();
+                // Update existing chart (faster than destroying and recreating)
+                savingsChart.data.labels = chartData.labels;
+                savingsChart.data.datasets = chartData.datasets;
+                savingsChart.update('none'); // No animation for updates
+            } else {
+                // Create new chart
+                savingsChart = new Chart(savingsChartCtx, {
+                    type: 'bar',
+                    data: chartData,
+                    options: chartOptions
+                });
             }
-
-            // Use 'bar' type overall - the goal line dataset overrides its type to 'line'
-            savingsChart = new Chart(savingsChartCtx, {
-                type: 'bar',
-                data: chartData,
-                options: chartOptions
-            });
         }
-
 
         // --- Event Listeners ---
         calculateBtnSavings.addEventListener('click', calculateSavingsGoal);
+        setupInputListeners();
 
         // --- Initial State ---
         document.addEventListener('DOMContentLoaded', () => {
@@ -396,7 +543,6 @@
             savingsChartError.classList.remove('hidden');
             calculateSavingsGoal();
         });
-
     </script>
 </body>
 </html>
