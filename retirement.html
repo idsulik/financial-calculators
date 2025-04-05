@@ -13,9 +13,10 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc; /* Tailwind gray-50 */
+            padding-top: 70px; /* Ensure content below fixed nav has padding */
         }
         /* Animation */
-        .input-section, .summary-section, .chart-section {
+        .input-section, .summary-section, .chart-section, .explanation-section {
             animation: fadeIn 0.5s ease-in-out;
         }
         @keyframes fadeIn {
@@ -37,45 +38,112 @@
             vertical-align: middle; margin-right: 0.5rem;
         }
         /* Ensure chart container has a defined height */
-         .chart-container canvas {
+        .chart-container canvas {
             max-height: 400px;
+        }
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+        }
+        /* Info section styling */
+        .info-section {
+            background-color: #eff6ff; /* blue-50 */
+            border-left: 4px solid #3b82f6; /* blue-500 */
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.375rem;
+        }
+        .info-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e40af; /* blue-800 */
+            margin-bottom: 0.5rem;
+        }
+        .info-section p, .info-section li {
+            font-size: 0.875rem;
+            color: #1e3a8a; /* blue-900 */
+        }
+        .info-section ul {
+            list-style: disc;
+            list-style-position: inside;
+            margin-top: 0.5rem;
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
-    <div class="max-w-5xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
+<body>
+    <nav class="bg-indigo-700 text-white p-3 shadow-md">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-lg font-semibold hover:text-indigo-200">Finance Suite Home</a>
+            <div class="hidden sm:flex space-x-3 md:space-x-4">
+                <a href="mortgage.html" class="hover:text-indigo-200 text-xs md:text-sm">Mortgage</a>
+                <a href="compound_interest.html" class="hover:text-indigo-200 text-xs md:text-sm">Interest</a>
+                <a href="budget.html" class="hover:text-indigo-200 text-xs md:text-sm">Budget</a>
+                <a href="retirement.html" class="hover:text-indigo-200 text-xs md:text-sm font-bold border-b-2 border-indigo-300">Retirement</a>
+                <a href="savings_goal.html" class="hover:text-indigo-200 text-xs md:text-sm">Savings Goal</a>
+                <a href="inflation.html" class="hover:text-indigo-200 text-xs md:text-sm">Inflation</a>
+            </div>
+            <div class="sm:hidden">
+                <button id="mobile-menu-button" class="text-white focus:outline-none">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden sm:hidden mt-2 space-y-1">
+            <a href="mortgage.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Mortgage</a>
+            <a href="compound_interest.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Interest</a>
+            <a href="budget.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Budget</a>
+            <a href="retirement.html" class="block px-3 py-2 rounded-md text-base font-medium bg-indigo-600">Retirement</a>
+            <a href="savings_goal.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Savings Goal</a>
+            <a href="inflation.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Inflation</a>
+        </div>
+    </nav>
 
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center">Retirement Planning Calculator</h1>
+    <div class="max-w-5xl mx-auto pt-6 px-6 md:px-8 pb-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">Retirement Planning Calculator</h1>
+
+        <section class="info-section explanation-section">
+            <h3>Why Plan for Retirement?</h3>
+            <p>This calculator helps you visualize how your retirement savings could grow over time. By understanding how your current savings, regular contributions, and investment returns work together, you can make informed decisions to secure your financial future and achieve your retirement goals.</p>
+        </section>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="md:col-span-1 space-y-4 input-section">
-                 <div>
+                <div class="text-xs text-gray-500 mb-2 p-2 bg-gray-100 rounded">
+                    Enter your current age, target retirement age, existing savings, monthly contribution, and expected investment return rate to see your projected retirement nest egg.
+                </div>
+                <div>
                     <label for="currentAge" class="flex items-center text-sm font-medium text-gray-700 mb-1">
                         <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/user.svg" alt="Age" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Current Age
                     </label>
                     <input type="number" id="currentAge" value="30" min="18" max="99" step="1" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
-                 <div>
+                <div>
                     <label for="retirementAge" class="flex items-center text-sm font-medium text-gray-700 mb-1">
-                         <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/flag.svg" alt="Retirement Age" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Target Retirement Age
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/flag.svg" alt="Retirement Age" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Target Retirement Age
                     </label>
                     <input type="number" id="retirementAge" value="65" min="19" max="100" step="1" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
-                 <div>
+                <div>
                     <label for="currentSavings" class="flex items-center text-sm font-medium text-gray-700 mb-1">
-                         <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/piggy-bank.svg" alt="Savings" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Current Retirement Savings ($)
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/piggy-bank.svg" alt="Savings" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Current Retirement Savings ($)
                     </label>
                     <input type="number" id="currentSavings" value="25000" min="0" step="1000" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
-                 <div>
+                <div>
                     <label for="monthlyContribution" class="flex items-center text-sm font-medium text-gray-700 mb-1">
-                         <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/calendar-plus.svg" alt="Contribution" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Monthly Contribution ($)
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/calendar-plus.svg" alt="Contribution" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Monthly Contribution ($)
                     </label>
                     <input type="number" id="monthlyContribution" value="500" min="0" step="50" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
-                 <div>
+                <div>
                     <label for="annualReturn" class="flex items-center text-sm font-medium text-gray-700 mb-1">
-                         <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/trending-up.svg" alt="Return Rate" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Estimated Annual Return (%)
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/trending-up.svg" alt="Return Rate" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Estimated Annual Return (%)
                     </label>
                     <input type="number" id="annualReturn" value="7" min="0" max="20" step="0.1" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
@@ -95,47 +163,77 @@
                         <p class="text-gray-600">Total Contributions</p>
                         <p id="totalContributions" class="text-lg font-medium text-gray-800">$0.00</p>
                     </div>
-                     <div>
+                    <div>
                         <p class="text-gray-600">Total Investment Growth</p>
                         <p id="totalGrowth" class="text-lg font-medium text-green-600">$0.00</p>
                     </div>
-                     <div>
+                    <div>
                         <p class="text-gray-600">Est. Annual Income (4% Rule)</p>
                         <p id="estimatedIncome" class="text-lg font-medium text-blue-600">$0.00</p>
                     </div>
                 </div>
-                 <p id="retirementCalculationError" class="text-red-500 text-sm mt-2 hidden">Please enter valid details.</p>
-                 <p class="text-xs text-gray-500 italic mt-4">Note: Projections are estimates based on inputs and do not guarantee future results. Does not account for taxes or inflation unless specified.</p>
+                <p id="retirementCalculationError" class="text-red-500 text-sm mt-2 hidden">Please enter valid details.</p>
+                <p class="text-xs text-gray-500 italic mt-4">Note: Projections are estimates based on inputs and do not guarantee future results. Does not account for taxes or inflation unless specified.</p>
             </div>
         </div>
 
-        <div class="chart-section bg-gray-50 p-4 rounded-lg shadow-inner chart-container">
-             <h2 class="text-lg font-semibold text-gray-700 mb-4 text-center">Savings Growth Over Time</h2>
+        <section class="info-section explanation-section">
+            <h3>Understanding Your Retirement Projection</h3>
+            <ul>
+                <li><strong>Estimated Nest Egg:</strong> The projected total value of your retirement savings at your target retirement age.</li>
+                <li><strong>Total Contributions:</strong> The sum of your initial savings and all monthly contributions over time.</li>
+                <li><strong>Total Investment Growth:</strong> The amount earned through investment returns (compound interest).</li>
+                <li><strong>Estimated Annual Income:</strong> Based on the 4% withdrawal rule, suggesting the amount you could potentially withdraw each year in retirement.</li>
+            </ul>
+        </section>
+
+        <div class="chart-section bg-gray-50 p-4 rounded-lg shadow-inner chart-container mb-8">
+            <h2 class="text-lg font-semibold text-gray-700 mb-4 text-center">Savings Growth Over Time</h2>
             <canvas id="retirementChart"></canvas>
             <p id="retirementChartError" class="text-center text-gray-500 text-sm mt-2 hidden">Calculate projection to view the chart.</p>
         </div>
 
-         <div class="mt-8 p-4 border-t border-gray-200 text-sm text-gray-600">
-            <h3 class="font-semibold text-gray-700 mb-2">Understanding Your Retirement Projection:</h3>
-            <ul class="list-disc list-inside space-y-1">
-                <li><strong>Estimated Nest Egg:</strong> The projected total value of your retirement savings at your target retirement age.</li>
-                <li><strong>Total Contributions:</strong> The total amount you put in (initial savings + all monthly contributions).</li>
-                <li><strong>Total Investment Growth:</strong> The estimated amount earned through investment returns.</li>
-                <li><strong>Estimated Annual Income (4% Rule):</strong> A common guideline suggesting you can safely withdraw 4% of your nest egg each year in retirement. This provides a rough estimate of potential income.</li>
+        <section class="info-section explanation-section border-l-yellow-500 bg-yellow-50">
+            <h3 class="text-yellow-800">Important Notes & Limitations</h3>
+            <ul class="text-yellow-900">
+                <li>This calculator assumes a <strong>consistent annual return</strong> on investments, which does not reflect real-world market volatility.</li>
+                <li>The projection does not account for <strong>inflation</strong>, which will reduce the purchasing power of your nest egg over time.</li>
+                <li>The 4% withdrawal rule is a <strong>general guideline</strong> and not a guaranteed safe withdrawal rate for all retirees.</li>
+                <li>The calculation doesn't factor in <strong>taxes</strong> on contributions, growth, or withdrawals, which can significantly impact actual results.</li>
+                <li>These results are for <strong>informational purposes only</strong>. Consult with a qualified financial advisor for personalized retirement planning advice.</li>
             </ul>
-            <p class="mt-2 italic">Remember that inflation will reduce the purchasing power of future money. Consider consulting a financial advisor for personalized planning.</p>
-        </div>
+        </section>
 
+        <div class="mt-8 p-4 border-t border-gray-200 text-sm text-gray-600">
+            <h3 class="font-semibold text-gray-700 mb-2">Retirement Planning Tips:</h3>
+            <ul class="list-disc list-inside space-y-1">
+                <li><strong>Start Early:</strong> Even small contributions can grow significantly over time due to compound interest.</li>
+                <li><strong>Increase Contributions:</strong> Try to increase your savings rate as your income grows over time.</li>
+                <li><strong>Consider Tax-Advantaged Accounts:</strong> Utilize 401(k)s, IRAs, and other retirement vehicles to potentially enhance growth.</li>
+                <li><strong>Diversify Investments:</strong> Spread your investments across different asset classes to manage risk.</li>
+                <li><strong>Review Regularly:</strong> Revisit your retirement plan annually to make adjustments as needed.</li>
+            </ul>
+            <p class="mt-2 italic">Remember: The earlier you start saving, the more time compound interest has to work in your favor.</p>
+        </div>
     </div>
 
     <script>
+        // --- Basic Mobile Menu Toggle ---
+        const btn = document.getElementById('mobile-menu-button');
+        const menu = document.getElementById('mobile-menu');
+        // Check if elements exist before adding listener
+        if (btn && menu) {
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
+        }
+        
         // --- DOM Elements ---
         const currentAgeInput = document.getElementById('currentAge');
         const retirementAgeInput = document.getElementById('retirementAge');
         const currentSavingsInput = document.getElementById('currentSavings');
         const monthlyContributionInput = document.getElementById('monthlyContribution');
         const annualReturnInput = document.getElementById('annualReturn');
-        // const inflationRateInput = document.getElementById('inflationRate'); // Optional
         const calculateBtnRetirement = document.getElementById('calculateBtnRetirement');
 
         const estimatedNestEggDisplay = document.getElementById('estimatedNestEgg');
@@ -147,17 +245,39 @@
 
         const retirementChartCtx = document.getElementById('retirementChart').getContext('2d');
         let retirementChart; // Chart instance
+        let updateTimeoutId; // For debouncing
 
         // --- Helper Functions ---
         const formatCurrency = (value) => {
             if (!isFinite(value)) return '$ --';
             return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }); // Show whole dollars for large numbers
         };
+        
         const formatCurrencyDetailed = (value) => { // For smaller numbers like income
-             if (!isFinite(value)) return '$ --';
+            if (!isFinite(value)) return '$ --';
             return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
         };
 
+        // Debounce function to limit calculation frequency
+        function debouncedUpdate() {
+            clearTimeout(updateTimeoutId);
+            updateTimeoutId = setTimeout(calculateRetirementProjection, 300); // 300ms debounce
+        }
+
+        // Add input event listeners with debounce
+        function setupInputListeners() {
+            const inputs = [
+                currentAgeInput,
+                retirementAgeInput,
+                currentSavingsInput,
+                monthlyContributionInput,
+                annualReturnInput
+            ];
+            
+            inputs.forEach(input => {
+                input.addEventListener('input', debouncedUpdate);
+            });
+        }
 
         // --- Calculation Logic ---
         function calculateRetirementProjection() {
@@ -171,7 +291,6 @@
             const currentSavings = parseFloat(currentSavingsInput.value) || 0;
             const monthlyContribution = parseFloat(monthlyContributionInput.value) || 0;
             const annualReturnRate = parseFloat(annualReturnInput.value) / 100 || 0;
-            // const inflationRate = parseFloat(inflationRateInput.value) / 100 || 0; // Optional
 
             // Validate inputs
             if (isNaN(currentAge) || isNaN(retirementAge) || isNaN(currentSavings) || isNaN(monthlyContribution) || isNaN(annualReturnRate) ||
@@ -194,7 +313,7 @@
             let totalPrincipal = currentSavings; // Start with initial savings
             const yearlyData = []; // { year, age, principal, growth, total }
 
-             // Record initial state (Year 0 / Current Age)
+            // Record initial state (Year 0 / Current Age)
             yearlyData.push({
                 year: 0,
                 age: currentAge,
@@ -202,7 +321,6 @@
                 growth: 0,
                 total: balance
             });
-
 
             let cumulativeGrowth = 0;
 
@@ -246,14 +364,13 @@
 
         // --- Charting Logic ---
         function updateRetirementChart(yearlyData) {
-             if (!yearlyData || yearlyData.length <= 1) { // Need at least initial state + 1 year
+            if (!yearlyData || yearlyData.length <= 1) { // Need at least initial state + 1 year
                 if (retirementChart) retirementChart.destroy();
                 retirementChartError.textContent = 'Not enough data to display chart.';
                 retirementChartError.classList.remove('hidden');
                 return;
             }
             retirementChartError.classList.add('hidden'); // Hide error if data is valid
-
 
             const labels = yearlyData.map(data => `Age ${data.age}`);
             const principalData = yearlyData.map(data => data.principal);
@@ -270,8 +387,7 @@
                         borderWidth: 1,
                         fill: true,
                         stack: 'combined',
-                        pointRadius: 1,
-                        pointHoverRadius: 4,
+                        pointRadius: 0, // Hide points for better performance
                         tension: 0.1 // Slight curve
                     },
                     {
@@ -282,8 +398,7 @@
                         borderWidth: 1,
                         fill: true,
                         stack: 'combined',
-                        pointRadius: 1,
-                        pointHoverRadius: 4,
+                        pointRadius: 0, // Hide points for better performance
                         tension: 0.1 // Slight curve
                     }
                 ]
@@ -292,17 +407,26 @@
             const chartOptions = {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: {
+                    duration: 300 // Faster animations
+                },
                 scales: {
-                     x: {
+                    x: {
                         stacked: true,
-                        title: { display: true, text: 'Age' }
+                        title: { display: true, text: 'Age' },
+                        ticks: {
+                            maxRotation: 0, // Horizontal labels
+                            autoSkip: true,
+                            maxTicksLimit: 10 // Limit number of labels for better readability
+                        }
                     },
                     y: {
                         stacked: true,
                         beginAtZero: true,
                         title: { display: true, text: 'Projected Value ($)' },
                         ticks: {
-                            callback: function(value) { return formatCurrency(value); }
+                            callback: function(value) { return formatCurrency(value); },
+                            maxTicksLimit: 8 // Limit number of ticks for better readability
                         }
                     }
                 },
@@ -321,7 +445,7 @@
                                 let sum = 0;
                                 tooltipItems.forEach(function(tooltipItem) {
                                     if(tooltipItem.dataset.stack === 'combined') {
-                                         sum += tooltipItem.parsed.y;
+                                        sum += tooltipItem.parsed.y;
                                     }
                                 });
                                 return 'Total Value: ' + formatCurrency(sum);
@@ -330,31 +454,39 @@
                     },
                     legend: {
                         position: 'top',
+                        labels: {
+                            boxWidth: 12, // Smaller legend items
+                            padding: 10
+                        }
                     }
                 },
-                 interaction: {
-                    mode: 'index',
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
                     intersect: false
                 }
             };
 
-            // Destroy previous chart instance if it exists
+            // Efficiently update or create chart
             if (retirementChart) {
-                retirementChart.destroy();
+                // Update existing chart (faster than destroying and recreating)
+                retirementChart.data.labels = chartData.labels;
+                retirementChart.data.datasets = chartData.datasets;
+                retirementChart.update('none'); // No animation for updates
+            } else {
+                // Create new chart instance
+                // Use 'bar' type for reliable stacking in Chart.js v3+ (visually acts like stacked area here)
+                retirementChart = new Chart(retirementChartCtx, {
+                    type: 'bar',
+                    data: chartData,
+                    options: chartOptions
+                });
             }
-
-            // Create new chart instance
-            // Use 'bar' type for reliable stacking in Chart.js v3+ (visually acts like stacked area here)
-            retirementChart = new Chart(retirementChartCtx, {
-                type: 'bar',
-                data: chartData,
-                options: chartOptions
-            });
         }
-
 
         // --- Event Listeners ---
         calculateBtnRetirement.addEventListener('click', calculateRetirementProjection);
+        setupInputListeners();
 
         // --- Initial State ---
         document.addEventListener('DOMContentLoaded', () => {
@@ -367,7 +499,6 @@
             retirementChartError.classList.remove('hidden');
             calculateRetirementProjection();
         });
-
     </script>
 </body>
 </html>
