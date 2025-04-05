@@ -13,9 +13,10 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc; /* gray-50 */
+            padding-top: 70px; /* Ensure content below fixed nav has padding */
         }
         /* Animation */
-        .input-section, .summary-section, .chart-section {
+        .input-section, .summary-section, .chart-section, .explanation-section {
             animation: fadeIn 0.5s ease-in-out;
         }
         @keyframes fadeIn {
@@ -37,37 +38,104 @@
             vertical-align: middle; margin-right: 0.5rem;
         }
         /* Chart container height */
-         .chart-container canvas {
+        .chart-container canvas {
             max-height: 400px;
+        }
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+        }
+        /* Info section styling */
+        .info-section {
+            background-color: #eff6ff; /* blue-50 */
+            border-left: 4px solid #3b82f6; /* blue-500 */
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.375rem;
+        }
+        .info-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e40af; /* blue-800 */
+            margin-bottom: 0.5rem;
+        }
+        .info-section p, .info-section li {
+            font-size: 0.875rem;
+            color: #1e3a8a; /* blue-900 */
+        }
+        .info-section ul {
+            list-style: disc;
+            list-style-position: inside;
+            margin-top: 0.5rem;
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
-    <div class="max-w-5xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
+<body>
+    <nav class="bg-indigo-700 text-white p-3 shadow-md">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-lg font-semibold hover:text-indigo-200">Finance Suite Home</a>
+            <div class="hidden sm:flex space-x-3 md:space-x-4">
+                <a href="mortgage.html" class="hover:text-indigo-200 text-xs md:text-sm">Mortgage</a>
+                <a href="compound_interest.html" class="hover:text-indigo-200 text-xs md:text-sm">Interest</a>
+                <a href="budget.html" class="hover:text-indigo-200 text-xs md:text-sm">Budget</a>
+                <a href="retirement.html" class="hover:text-indigo-200 text-xs md:text-sm">Retirement</a>
+                <a href="savings_goal.html" class="hover:text-indigo-200 text-xs md:text-sm">Savings Goal</a>
+                <a href="inflation.html" class="hover:text-indigo-200 text-xs md:text-sm font-bold border-b-2 border-indigo-300">Inflation</a>
+            </div>
+            <div class="sm:hidden">
+                <button id="mobile-menu-button" class="text-white focus:outline-none">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden sm:hidden mt-2 space-y-1">
+            <a href="mortgage.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Mortgage</a>
+            <a href="compound_interest.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Interest</a>
+            <a href="budget.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Budget</a>
+            <a href="retirement.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Retirement</a>
+            <a href="savings_goal.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Savings Goal</a>
+            <a href="inflation.html" class="block px-3 py-2 rounded-md text-base font-medium bg-indigo-600">Inflation</a>
+        </div>
+    </nav>
 
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-8 text-center">Inflation Calculator (Future Cost)</h1>
+    <div class="max-w-5xl mx-auto pt-6 px-6 md:px-8 pb-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">Inflation Calculator (Future Cost)</h1>
+
+        <section class="info-section explanation-section">
+            <h3>Why Calculate Inflation's Impact?</h3>
+            <p>This calculator helps you understand how inflation affects purchasing power over time. Whether you're planning for future expenses, saving for a major purchase, or estimating retirement needs, accounting for inflation is essential for realistic financial planning.</p>
+        </section>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="md:col-span-1 space-y-4 input-section">
-                 <div>
+                <div class="text-xs text-gray-500 mb-2 p-2 bg-gray-100 rounded">
+                    Enter the current cost of an item or service, how many years into the future you're planning for, and the expected average annual inflation rate.
+                </div>
+                <div>
                     <label for="currentCost" class="flex items-center text-sm font-medium text-gray-700 mb-1">
                         <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/dollar-sign.svg" alt="Cost" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Current Cost ($)
                     </label>
                     <input type="number" id="currentCost" value="1000" min="0.01" step="100" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
-                 <div>
+                <div>
                     <label for="numberOfYears" class="flex items-center text-sm font-medium text-gray-700 mb-1">
-                         <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/calendar-days.svg" alt="Years" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Number of Years
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/calendar-days.svg" alt="Years" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Number of Years
                     </label>
                     <input type="number" id="numberOfYears" value="10" min="1" max="100" step="1" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
-                 <div>
+                <div>
                     <label for="inflationRate" class="flex items-center text-sm font-medium text-gray-700 mb-1">
-                         <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/trending-up.svg" alt="Inflation Rate" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Average Annual Inflation Rate (%)
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/trending-up.svg" alt="Inflation Rate" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'"> Average Annual Inflation Rate (%)
                     </label>
                     <input type="number" id="inflationRate" value="3" min="0" max="25" step="0.1" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
-                 <button id="calculateBtnInflation" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md shadow transition duration-150 ease-in-out mt-2">
+                <button id="calculateBtnInflation" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md shadow transition duration-150 ease-in-out mt-2">
                     Calculate Future Cost
                 </button>
             </div>
@@ -80,7 +148,7 @@
                     <p id="yearsSummary" class="text-xs text-gray-500 mt-1">after X years</p>
                 </div>
                 <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                     <div>
+                    <div>
                         <p class="text-gray-600">Current Cost</p>
                         <p id="summaryCurrentCost" class="text-lg font-medium text-gray-800">$0.00</p>
                     </div>
@@ -89,29 +157,62 @@
                         <p id="summaryTotalIncrease" class="text-lg font-medium text-red-600">$0.00</p>
                     </div>
                 </div>
-                 <p id="inflationCalculationError" class="text-red-500 text-sm mt-2 hidden">Please enter valid details.</p>
+                <p id="inflationCalculationError" class="text-red-500 text-sm mt-2 hidden">Please enter valid details.</p>
+                <p class="text-xs text-gray-500 italic mt-4">Note: This calculation assumes a constant inflation rate throughout the entire period.</p>
             </div>
         </div>
 
-        <div class="chart-section bg-gray-50 p-4 rounded-lg shadow-inner chart-container">
-             <h2 class="text-lg font-semibold text-gray-700 mb-4 text-center">Cost Increase Over Time</h2>
+        <section class="info-section explanation-section">
+            <h3>Understanding Inflation's Impact</h3>
+            <ul>
+                <li><strong>Estimated Future Cost:</strong> The projected cost of the item or service after inflation has been applied for the specified time period.</li>
+                <li><strong>Current Cost:</strong> The present-day price before accounting for inflation.</li>
+                <li><strong>Total Increase:</strong> The additional amount you'll need to pay in the future due solely to inflation's effects.</li>
+                <li><strong>Chart:</strong> Visualizes how costs increase over time due to the compounding effect of inflation.</li>
+            </ul>
+        </section>
+
+        <div class="chart-section bg-gray-50 p-4 rounded-lg shadow-inner chart-container mb-8">
+            <h2 class="text-lg font-semibold text-gray-700 mb-4 text-center">Cost Increase Over Time</h2>
             <canvas id="inflationChart"></canvas>
             <p id="inflationChartError" class="text-center text-gray-500 text-sm mt-2 hidden">Calculate future cost to view the chart.</p>
         </div>
 
-         <div class="mt-8 p-4 border-t border-gray-200 text-sm text-gray-600">
-            <h3 class="font-semibold text-gray-700 mb-2">Understanding Inflation's Impact:</h3>
-            <ul class="list-disc list-inside space-y-1">
-                <li>Inflation erodes the purchasing power of money over time. An item costing $100 today will likely cost more in the future.</li>
-                <li>This calculator estimates the future cost based on a constant average annual inflation rate.</li>
-                <li>The chart shows how the cost increases year by year.</li>
+        <section class="info-section explanation-section border-l-yellow-500 bg-yellow-50">
+            <h3 class="text-yellow-800">Important Notes & Limitations</h3>
+            <ul class="text-yellow-900">
+                <li>This calculator assumes a <strong>constant average inflation rate</strong> over the entire period, which rarely happens in reality.</li>
+                <li>Actual inflation varies by <strong>country, region, and specific goods or services</strong>. Some items may experience higher or lower inflation than the average.</li>
+                <li>The calculator does not account for <strong>economic cycles, recessions, or sudden inflation spikes</strong> that might occur.</li>
+                <li>Historical US inflation has averaged roughly 3% annually over the long term, but past performance does not guarantee future results.</li>
+                <li>These projections are for <strong>informational purposes only</strong> and should be considered approximations rather than precise predictions.</li>
             </ul>
-            <p class="mt-2 italic">Note: Actual inflation rates fluctuate and this calculation provides a simplified estimate.</p>
-        </div>
+        </section>
 
+        <div class="mt-8 p-4 border-t border-gray-200 text-sm text-gray-600">
+            <h3 class="font-semibold text-gray-700 mb-2">Inflation Planning Tips:</h3>
+            <ul class="list-disc list-inside space-y-1">
+                <li><strong>Account for Inflation in Long-Term Goals:</strong> For retirement, education, or other long-term plans, be sure to factor in inflation's effects.</li>
+                <li><strong>Consider Inflation-Protected Investments:</strong> Assets like TIPS (Treasury Inflation-Protected Securities) or I-Bonds can help hedge against inflation risks.</li>
+                <li><strong>Review Your Assumptions:</strong> Periodically reassess your inflation assumptions based on current economic conditions and expert forecasts.</li>
+                <li><strong>Plan for Different Scenarios:</strong> Consider calculating with different inflation rates (low, moderate, high) to prepare for various economic environments.</li>
+                <li><strong>Remember Category Differences:</strong> Healthcare and education costs have historically risen faster than general inflation, while technology often decreases in cost.</li>
+            </ul>
+            <p class="mt-2 italic">Remember: Even modest inflation rates can significantly reduce purchasing power over long time periods due to compounding effects.</p>
+        </div>
     </div>
 
     <script>
+        // --- Basic Mobile Menu Toggle ---
+        const btn = document.getElementById('mobile-menu-button');
+        const menu = document.getElementById('mobile-menu');
+        // Check if elements exist before adding listener
+        if (btn && menu) {
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
+        }
+        
         // --- DOM Elements ---
         const currentCostInput = document.getElementById('currentCost');
         const numberOfYearsInput = document.getElementById('numberOfYears');
@@ -127,12 +228,32 @@
 
         const inflationChartCtx = document.getElementById('inflationChart').getContext('2d');
         let inflationChart; // Chart instance
+        let updateTimeoutId; // For debouncing
 
         // --- Helper Functions ---
         const formatCurrency = (value) => {
             if (!isFinite(value)) return '$ --';
             return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
         };
+
+        // Debounce function to limit calculation frequency
+        function debouncedUpdate() {
+            clearTimeout(updateTimeoutId);
+            updateTimeoutId = setTimeout(calculateInflation, 300); // 300ms debounce
+        }
+
+        // Add input event listeners with debounce
+        function setupInputListeners() {
+            const inputs = [
+                currentCostInput,
+                numberOfYearsInput,
+                inflationRateInput
+            ];
+            
+            inputs.forEach(input => {
+                input.addEventListener('input', debouncedUpdate);
+            });
+        }
 
         // --- Calculation Logic ---
         function calculateInflation() {
@@ -182,14 +303,13 @@
             summaryCurrentCost.textContent = formatCurrency(currentCost);
             summaryTotalIncrease.textContent = formatCurrency(totalIncrease);
 
-
             // Update Chart
             updateInflationChart(yearlyCostData);
         }
 
         // --- Charting Logic ---
         function updateInflationChart(yearlyCostData) {
-             if (!yearlyCostData || yearlyCostData.length <= 1) { // Need year 0 and at least year 1
+            if (!yearlyCostData || yearlyCostData.length <= 1) { // Need year 0 and at least year 1
                 if (inflationChart) inflationChart.destroy();
                 inflationChartError.textContent = 'Not enough data to display chart.';
                 inflationChartError.classList.remove('hidden');
@@ -197,35 +317,82 @@
             }
             inflationChartError.classList.add('hidden');
 
-            const labels = yearlyCostData.map(data => `Year ${data.year}`);
-            const costData = yearlyCostData.map(data => data.cost);
+            // For better readability, limit the data points shown on the x-axis
+            const filteredData = filterDataPoints(yearlyCostData);
+            
+            const labels = filteredData.map(data => data.year === 0 ? 'Today' : `Year ${data.year}`);
+            const costData = filteredData.map(data => data.cost);
+            
+            // Calculate the purchasing power value (inverse of inflation)
+            const purchasingPowerData = filteredData.map(data => {
+                if (data.year === 0) return 100; // Start at 100%
+                return (yearlyCostData[0].cost / data.cost) * 100; // Value as percentage of original
+            });
 
             const chartData = {
                 labels: labels,
-                datasets: [{
-                    label: 'Inflated Cost',
-                    data: costData,
-                    borderColor: 'rgba(234, 88, 12, 1)', // orange-600
-                    backgroundColor: 'rgba(234, 88, 12, 0.2)', // orange-600 with opacity
-                    borderWidth: 2,
-                    fill: true, // Fill area under the line
-                    tension: 0.1 // Slight curve
-                }]
+                datasets: [
+                    {
+                        label: 'Future Cost',
+                        data: costData,
+                        borderColor: 'rgba(234, 88, 12, 1)', // orange-600
+                        backgroundColor: 'rgba(234, 88, 12, 0.2)', // orange-600 with opacity
+                        borderWidth: 2,
+                        fill: true, // Fill area under the line
+                        tension: 0.1, // Slight curve
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Purchasing Power (%)',
+                        data: purchasingPowerData,
+                        borderColor: 'rgba(59, 130, 246, 1)', // blue-500
+                        backgroundColor: 'rgba(59, 130, 246, 0.0)', // No fill
+                        borderWidth: 2,
+                        borderDash: [5, 5], // Dashed line
+                        tension: 0.1, // Slight curve
+                        yAxisID: 'y1'
+                    }
+                ]
             };
 
             const chartOptions = {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: {
+                    duration: 300 // Faster animations
+                },
                 scales: {
                     y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
                         beginAtZero: false, // Start axis near the initial value
                         title: { display: true, text: 'Cost ($)' },
                         ticks: {
-                            callback: function(value) { return formatCurrency(value); }
+                            callback: function(value) { return formatCurrency(value); },
+                            maxTicksLimit: 8 // Limit number of ticks for better readability
                         }
                     },
-                     x: {
-                        title: { display: true, text: 'Years from Today' }
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        min: 0,
+                        max: 100,
+                        title: { display: true, text: 'Purchasing Power (%)' },
+                        ticks: {
+                            callback: function(value) { return value + '%'; }
+                        },
+                        grid: {
+                            drawOnChartArea: false // Only show grid for primary y-axis
+                        }
+                    },
+                    x: {
+                        title: { display: true, text: 'Years from Today' },
+                        ticks: {
+                            maxRotation: 0, // Horizontal labels
+                            autoSkip: true // Automatically skip labels that would overlap
+                        }
                     }
                 },
                 plugins: {
@@ -236,34 +403,71 @@
                             label: function(context) {
                                 let label = context.dataset.label || '';
                                 if (label) { label += ': '; }
-                                label += formatCurrency(context.parsed.y);
+                                
+                                if (context.dataset.yAxisID === 'y1') {
+                                    label += context.parsed.y.toFixed(1) + '%';
+                                } else {
+                                    label += formatCurrency(context.parsed.y);
+                                }
                                 return label;
                             }
                         }
                     },
                     legend: {
-                        display: false // Only one dataset, legend not crucial
+                        position: 'top',
+                        labels: {
+                            boxWidth: 12, // Smaller legend items
+                            padding: 10
+                        }
                     }
                 },
-                 interaction: {
-                    mode: 'index',
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
                     intersect: false
                 }
             };
 
+            // Efficiently update or create chart
             if (inflationChart) {
-                inflationChart.destroy();
+                // Update existing chart (faster than destroying and recreating)
+                inflationChart.data.labels = chartData.labels;
+                inflationChart.data.datasets = chartData.datasets;
+                inflationChart.update('none'); // No animation for updates
+            } else {
+                // Create new chart
+                inflationChart = new Chart(inflationChartCtx, {
+                    type: 'line',
+                    data: chartData,
+                    options: chartOptions
+                });
             }
+        }
 
-            inflationChart = new Chart(inflationChartCtx, {
-                type: 'line',
-                data: chartData,
-                options: chartOptions
-            });
+        // Helper function to filter data points for clearer chart display
+        function filterDataPoints(data) {
+            // If 10 or fewer years, show all data points
+            if (data.length <= 11) {
+                return data;
+            }
+            
+            // For longer periods, show start, end, and intervals
+            const result = [data[0]]; // Always include starting point
+            
+            // Determine appropriate interval (aim for ~10 total points)
+            const interval = Math.ceil(data.length / 10);
+            
+            for (let i = interval; i < data.length - 1; i += interval) {
+                result.push(data[i]);
+            }
+            
+            result.push(data[data.length - 1]); // Always include ending point
+            return result;
         }
 
         // --- Event Listeners ---
         calculateBtnInflation.addEventListener('click', calculateInflation);
+        setupInputListeners();
 
         // --- Initial State ---
         document.addEventListener('DOMContentLoaded', () => {
@@ -275,7 +479,6 @@
             inflationChartError.classList.remove('hidden');
             calculateInflation();
         });
-
     </script>
 </body>
 </html>
