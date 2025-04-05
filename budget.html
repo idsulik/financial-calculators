@@ -14,9 +14,10 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc; /* Tailwind gray-50 */
+            padding-top: 70px; /* Ensure content below fixed nav has padding */
         }
         /* Subtle animation */
-        .budget-section, .chart-section, .summary-section {
+        .budget-section, .chart-section, .summary-section, .explanation-section {
             animation: fadeIn 0.5s ease-in-out;
         }
         @keyframes fadeIn {
@@ -47,75 +48,189 @@
             vertical-align: middle;
             margin-right: 0.5rem;
         }
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+        }
+        /* Info section styling */
+        .info-section {
+            background-color: #eff6ff; /* blue-50 */
+            border-left: 4px solid #3b82f6; /* blue-500 */
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0.375rem;
+        }
+        .info-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e40af; /* blue-800 */
+            margin-bottom: 0.5rem;
+        }
+        .info-section p, .info-section li {
+            font-size: 0.875rem;
+            color: #1e3a8a; /* blue-900 */
+        }
+        .info-section ul {
+            list-style: disc;
+            list-style-position: inside;
+            margin-top: 0.5rem;
+        }
     </style>
 </head>
-<body class="p-4 md:p-8">
-    <div class="max-w-4xl mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
+<body>
+    <nav class="bg-indigo-700 text-white p-3 shadow-md">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-lg font-semibold hover:text-indigo-200">Finance Suite Home</a>
+            <div class="hidden sm:flex space-x-3 md:space-x-4">
+                <a href="mortgage.html" class="hover:text-indigo-200 text-xs md:text-sm">Mortgage</a>
+                <a href="compound_interest.html" class="hover:text-indigo-200 text-xs md:text-sm">Interest</a>
+                <a href="budget.html" class="hover:text-indigo-200 text-xs md:text-sm font-bold border-b-2 border-indigo-300">Budget</a>
+                <a href="retirement.html" class="hover:text-indigo-200 text-xs md:text-sm">Retirement</a>
+                <a href="savings_goal.html" class="hover:text-indigo-200 text-xs md:text-sm">Savings Goal</a>
+                <a href="inflation.html" class="hover:text-indigo-200 text-xs md:text-sm">Inflation</a>
+            </div>
+            <div class="sm:hidden">
+                <button id="mobile-menu-button" class="text-white focus:outline-none">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden sm:hidden mt-2 space-y-1">
+            <a href="mortgage.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Mortgage</a>
+            <a href="compound_interest.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Interest</a>
+            <a href="budget.html" class="block px-3 py-2 rounded-md text-base font-medium bg-indigo-600">Budget</a>
+            <a href="retirement.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Retirement</a>
+            <a href="savings_goal.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Savings Goal</a>
+            <a href="inflation.html" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-indigo-600">Inflation</a>
+        </div>
+    </nav>
 
+    <div class="max-w-5xl mx-auto pt-6 px-6 md:px-8 pb-8">
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">Interactive Budget Planner</h1>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 budget-section mb-8">
+        <section class="info-section explanation-section">
+            <h3>Why Use This Budget Planner?</h3>
+            <p>This tool helps you visualize where your money goes each month. By inputting your income and breaking down your expenses by category, you can identify spending patterns, find opportunities to save, and ensure your financial priorities are properly balanced.</p>
+        </section>
 
-            <div class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 budget-section">
+            <div class="md:col-span-1 space-y-4">
+                <div class="text-xs text-gray-500 mb-2 p-2 bg-gray-100 rounded">
+                    Enter your total monthly income and then estimate your spending for each expense category to see a complete budget breakdown.
+                </div>
                 <div>
-                    <label for="monthlyIncome" class="flex items-center text-lg font-semibold text-gray-700 mb-2">
-                         <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/landmark.svg" alt="Income Icon" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'">
+                    <label for="monthlyIncome" class="flex items-center text-sm font-medium text-gray-700 mb-1">
+                        <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/landmark.svg" alt="Income Icon" class="icon" onerror="this.outerHTML='<span class=\'placeholder-icon\'></span>'">
                         Monthly Income ($)
                     </label>
                     <input type="number" id="monthlyIncome" placeholder="Enter your monthly income" value="3000" min="0" step="100" class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-lg">
                 </div>
 
-                <div class="chart-section bg-gray-50 p-4 rounded-lg shadow-inner relative h-64 md:h-80">
-                    <h2 class="text-lg font-semibold text-gray-700 mb-2 text-center">Expense Breakdown</h2>
-                    <canvas id="budgetChart"></canvas>
-                    <div id="noExpensesMessage" class="absolute inset-0 flex items-center justify-center text-gray-500 hidden">
-                        Enter expenses to see the chart
-                    </div>
+                <button id="resetButton" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md shadow transition duration-150 ease-in-out mt-4">
+                    Reset Budget
+                </button>
+
+                <button id="saveButton" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md shadow transition duration-150 ease-in-out">
+                    Save Budget
+                </button>
+            </div>
+
+            <div class="md:col-span-2 space-y-4">
+                <h2 class="text-lg font-semibold text-gray-700 mb-2">Monthly Expenses ($)</h2>
+                <div id="expenseList" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Expense inputs will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <section class="info-section explanation-section">
+            <h3>Understanding Your Budget</h3>
+            <ul>
+                <li><strong>Expense Breakdown:</strong> The pie chart shows the proportion of your spending in each category, helping you identify where most of your money goes.</li>
+                <li><strong>Budget Summary:</strong> Compare your total income against expenses to see if you're living within your means and how much you have left for savings or discretionary spending.</li>
+                <li><strong>Balance:</strong> A positive balance means you have money left over, while a negative balance indicates you're spending more than you earn.</li>
+            </ul>
+        </section>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="chart-section bg-gray-50 p-4 rounded-lg shadow-inner relative h-80">
+                <h2 class="text-lg font-semibold text-gray-700 mb-2 text-center">Expense Breakdown</h2>
+                <canvas id="budgetChart"></canvas>
+                <div id="noExpensesMessage" class="absolute inset-0 flex items-center justify-center text-gray-500 hidden">
+                    Enter expenses to see the chart
                 </div>
             </div>
 
-            <div class="space-y-4">
-                <h2 class="text-lg font-semibold text-gray-700 mb-2">Monthly Expenses ($)</h2>
-                <div id="expenseList" class="space-y-3">
+            <div class="summary-section bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-lg flex flex-col justify-center">
+                <h2 class="text-xl font-semibold text-indigo-800 mb-4 text-center">Budget Summary</h2>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                        <p class="text-gray-600">Total Monthly Income</p>
+                        <p id="summaryIncome" class="text-lg font-medium text-green-600">$0.00</p>
                     </div>
-                 </div>
+                    <div class="flex justify-between items-center border-b border-gray-200 pb-2">
+                        <p class="text-gray-600">Total Monthly Expenses</p>
+                        <p id="summaryExpenses" class="text-lg font-medium text-red-600">$0.00</p>
+                    </div>
+                    <div class="flex justify-between items-center pt-2">
+                        <p class="text-gray-700 font-semibold">Remaining Balance</p>
+                        <p id="summaryBalance" class="text-xl font-bold text-gray-800">$0.00</p>
+                    </div>
+                </div>
+                <div id="balanceMessage" class="mt-4 text-center text-sm font-medium"></div>
+            </div>
         </div>
 
-        <div class="summary-section bg-gradient-to-r from-indigo-50 to-purple-50 p-5 rounded-lg text-center space-y-3 shadow">
-             <h2 class="text-xl font-semibold text-indigo-800">Budget Summary</h2>
-             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                 <div>
-                     <p class="text-sm text-gray-600">Total Income</p>
-                     <p id="summaryIncome" class="text-lg font-medium text-green-600">$0.00</p>
-                 </div>
-                 <div>
-                     <p class="text-sm text-gray-600">Total Expenses</p>
-                     <p id="summaryExpenses" class="text-lg font-medium text-red-600">$0.00</p>
-                 </div>
-                 <div>
-                     <p class="text-sm text-gray-600">Remaining Balance</p>
-                     <p id="summaryBalance" class="text-lg font-bold text-gray-800">$0.00</p>
-                 </div>
-             </div>
-        </div>
+        <section class="info-section explanation-section border-l-yellow-500 bg-yellow-50">
+            <h3 class="text-yellow-800">Important Notes & Limitations</h3>
+            <ul class="text-yellow-900">
+                <li>This planner assumes <strong>consistent monthly income and expenses</strong>, which may not reflect irregular earnings or seasonal costs.</li>
+                <li>The tool is for <strong>planning purposes only</strong> and should be adjusted as your actual spending patterns emerge.</li>
+                <li>For accurate financial planning, consider tracking your actual expenses over several months and revising your budget accordingly.</li>
+                <li>This budget does not account for <strong>long-term financial goals</strong> like retirement planning - consider using dedicated tools for those purposes.</li>
+            </ul>
+        </section>
 
-         <div class="mt-8 p-4 border-t border-gray-200 text-sm text-gray-600">
-            <h3 class="font-semibold text-gray-700 mb-2">How to Use:</h3>
-            <p>Enter your total monthly income and then fill in your estimated spending for each expense category. The chart and summary will update automatically to show you where your money is going and how much you have left over.</p>
-             <p class="mt-2 italic">Tip: Be realistic with your expense estimates! Tracking helps you understand your spending habits and find areas to save.</p>
+        <div class="mt-8 p-4 border-t border-gray-200 text-sm text-gray-600">
+            <h3 class="font-semibold text-gray-700 mb-2">Budgeting Tips:</h3>
+            <ul class="list-disc list-inside space-y-1">
+                <li><strong>50/30/20 Rule:</strong> Try allocating 50% of income to needs, 30% to wants, and 20% to savings/debt repayment.</li>
+                <li><strong>Track Spending:</strong> Record all expenses for at least a month to get a realistic picture of your spending habits.</li>
+                <li><strong>Prioritize Savings:</strong> Consider "paying yourself first" by setting aside savings before allocating to other expenses.</li>
+                <li><strong>Review Regularly:</strong> Adjust your budget monthly as your financial situation and goals evolve.</li>
+            </ul>
+            <p class="mt-2 italic">Remember: A budget is not meant to restrict you, but rather to help you align your spending with your financial priorities and goals.</p>
         </div>
-
     </div>
 
     <script>
+        // --- Basic Mobile Menu Toggle ---
+        const btn = document.getElementById('mobile-menu-button');
+        const menu = document.getElementById('mobile-menu');
+        // Check if elements exist before adding listener
+        if (btn && menu) {
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
+        }
+
         // --- DOM Elements ---
         const monthlyIncomeInput = document.getElementById('monthlyIncome');
         const expenseListDiv = document.getElementById('expenseList');
         const summaryIncome = document.getElementById('summaryIncome');
         const summaryExpenses = document.getElementById('summaryExpenses');
         const summaryBalance = document.getElementById('summaryBalance');
+        const balanceMessage = document.getElementById('balanceMessage');
         const chartCtx = document.getElementById('budgetChart').getContext('2d');
         const noExpensesMessage = document.getElementById('noExpensesMessage');
+        const resetButton = document.getElementById('resetButton');
+        const saveButton = document.getElementById('saveButton');
         let budgetChart; // Chart instance
 
         // --- Initial Data & Config ---
@@ -125,10 +240,14 @@
             { name: 'Food & Groceries', icon: 'shopping-cart', value: 400 },
             { name: 'Transportation', icon: 'car', value: 150 },
             { name: 'Utilities', icon: 'lightbulb', value: 100 },
-            { name: 'Entertainment', icon: 'popcorn', value: 100 },
+            { name: 'Insurance', icon: 'shield', value: 150 },
+            { name: 'Entertainment', icon: 'tv', value: 100 },
             { name: 'Personal Care', icon: 'sparkles', value: 50 },
-            { name: 'Savings/Debt', icon: 'piggy-bank', value: 200 },
-            { name: 'Other', icon: 'ellipsis', value: 50 }
+            { name: 'Health & Medical', icon: 'heart-pulse', value: 100 },
+            { name: 'Savings', icon: 'piggy-bank', value: 200 },
+            { name: 'Debt Repayment', icon: 'credit-card', value: 200 },
+            { name: 'Education', icon: 'book-open', value: 50 },
+            { name: 'Other', icon: 'more-horizontal', value: 50 }
         ];
 
         // Colors for the chart segments (Tailwind colors)
@@ -143,7 +262,8 @@
             '#3b82f6', // blue-500
             '#8b5cf6', // violet-500
             '#d946ef', // fuchsia-500
-            '#ec4899'  // pink-500
+            '#ec4899', // pink-500
+            '#6b7280'  // gray-500 (for "Other")
         ];
 
         // --- Helper Functions ---
@@ -186,9 +306,8 @@
 
         // --- Charting Logic ---
         function updateChart(labels, data) {
-             const hasData = data.some(value => value > 0);
-             noExpensesMessage.classList.toggle('hidden', hasData); // Show message if no data
-
+            const hasData = data.some(value => value > 0);
+            noExpensesMessage.classList.toggle('hidden', hasData); // Show message if no data
 
             const chartData = {
                 labels: labels,
@@ -208,7 +327,14 @@
                 cutout: '60%', // Makes it a doughnut chart
                 plugins: {
                     legend: {
-                        display: false // Hide legend as labels are clear enough
+                        position: 'right',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 15,
+                            font: {
+                                size: 11
+                            }
+                        }
                     },
                     tooltip: {
                         callbacks: {
@@ -219,6 +345,11 @@
                                 }
                                 if (context.parsed !== null) {
                                     label += formatCurrency(context.parsed);
+                                    
+                                    // Calculate and add percentage
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((context.parsed / total) * 100);
+                                    label += ` (${percentage}%)`;
                                 }
                                 return label;
                             }
@@ -232,19 +363,47 @@
                 budgetChart.destroy();
             }
 
-             // Only create chart if there's data to show
+            // Only create chart if there's data to show
             if (hasData) {
-                 budgetChart = new Chart(chartCtx, {
+                budgetChart = new Chart(chartCtx, {
                     type: 'doughnut',
                     data: chartData,
                     options: chartOptions
                 });
             } else {
-                 // Clear canvas if no data
+                // Clear canvas if no data
                 chartCtx.clearRect(0, 0, chartCtx.canvas.width, chartCtx.canvas.height);
             }
         }
 
+        // Function to provide feedback on the budget balance
+        function updateBalanceMessage(balance, income) {
+            if (income === 0) {
+                balanceMessage.textContent = "Please enter your monthly income.";
+                balanceMessage.className = "mt-4 text-center text-sm font-medium text-gray-600";
+                return;
+            }
+
+            if (balance > 0) {
+                const savingsRate = (balance / income) * 100;
+                if (savingsRate >= 20) {
+                    balanceMessage.textContent = "Great job! You're saving more than 20% of your income.";
+                    balanceMessage.className = "mt-4 text-center text-sm font-medium text-green-600";
+                } else if (savingsRate >= 10) {
+                    balanceMessage.textContent = "Good work! You're saving between 10-20% of your income.";
+                    balanceMessage.className = "mt-4 text-center text-sm font-medium text-green-600";
+                } else {
+                    balanceMessage.textContent = "You have a positive balance. Consider increasing your savings if possible.";
+                    balanceMessage.className = "mt-4 text-center text-sm font-medium text-blue-600";
+                }
+            } else if (balance === 0) {
+                balanceMessage.textContent = "Your budget is exactly balanced. Consider adding a savings category.";
+                balanceMessage.className = "mt-4 text-center text-sm font-medium text-yellow-600";
+            } else {
+                balanceMessage.textContent = "Warning: You're spending more than you earn. Review your expenses.";
+                balanceMessage.className = "mt-4 text-center text-sm font-medium text-red-600";
+            }
+        }
 
         // --- Main Update Logic ---
         function updateBudget() {
@@ -274,13 +433,103 @@
             summaryExpenses.textContent = formatCurrency(totalExpenses);
             summaryBalance.textContent = formatCurrency(balance);
 
-            // Style the balance based on positive/negative
-            summaryBalance.classList.toggle('text-green-700', balance >= 0);
-            summaryBalance.classList.toggle('text-red-700', balance < 0);
-            summaryBalance.classList.toggle('text-gray-800', balance === 0); // Neutral if zero
+            // 5. Style the balance based on positive/negative
+            summaryBalance.classList.remove('text-green-700', 'text-red-700', 'text-gray-800');
+            if (balance > 0) {
+                summaryBalance.classList.add('text-green-700');
+            } else if (balance < 0) {
+                summaryBalance.classList.add('text-red-700');
+            } else {
+                summaryBalance.classList.add('text-gray-800'); // Neutral if zero
+            }
 
-            // 5. Update Chart
+            // 6. Update balance feedback message
+            updateBalanceMessage(balance, income);
+
+            // 7. Update Chart
             updateChart(expenseLabels, expenseData);
+        }
+
+        // --- Reset functionality ---
+        function resetBudget() {
+            if (confirm('Are you sure you want to reset your budget? This will clear all values.')) {
+                monthlyIncomeInput.value = '';
+                
+                // Reset all expense inputs
+                document.querySelectorAll('.expense-input').forEach(input => {
+                    input.value = '';
+                });
+                
+                // Clear the chart
+                if (budgetChart) {
+                    budgetChart.destroy();
+                    budgetChart = null;
+                }
+                
+                // Reset summary
+                summaryIncome.textContent = '$0.00';
+                summaryExpenses.textContent = '$0.00';
+                summaryBalance.textContent = '$0.00';
+                summaryBalance.className = 'text-xl font-bold text-gray-800';
+                balanceMessage.textContent = '';
+                
+                // Show the no expenses message
+                noExpensesMessage.classList.remove('hidden');
+            }
+        }
+
+        // --- Save budget functionality (localStorage) ---
+        function saveBudget() {
+            try {
+                const budgetData = {
+                    income: monthlyIncomeInput.value,
+                    expenses: {}
+                };
+                
+                // Collect all expense values
+                document.querySelectorAll('.expense-input').forEach(input => {
+                    budgetData.expenses[input.dataset.category] = input.value;
+                });
+                
+                // Save to localStorage
+                localStorage.setItem('budgetData', JSON.stringify(budgetData));
+                
+                alert('Budget saved successfully!');
+            } catch (error) {
+                alert('Unable to save budget. ' + error.message);
+            }
+        }
+
+        // --- Load saved budget if available ---
+        function loadSavedBudget() {
+            try {
+                const savedBudget = localStorage.getItem('budgetData');
+                if (savedBudget) {
+                    const budgetData = JSON.parse(savedBudget);
+                    
+                    // Set income
+                    if (budgetData.income) {
+                        monthlyIncomeInput.value = budgetData.income;
+                    }
+                    
+                    // Set expense values (after inputs are created)
+                    if (budgetData.expenses) {
+                        setTimeout(() => {
+                            document.querySelectorAll('.expense-input').forEach(input => {
+                                const category = input.dataset.category;
+                                if (budgetData.expenses[category]) {
+                                    input.value = budgetData.expenses[category];
+                                }
+                            });
+                            
+                            // Update budget calculations
+                            updateBudget();
+                        }, 100);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading saved budget:', error);
+            }
         }
 
         // --- Initialization ---
@@ -291,8 +540,13 @@
                 expenseListDiv.appendChild(inputElement);
             });
 
-            // Add event listener for income input
+            // Add event listeners
             monthlyIncomeInput.addEventListener('input', updateBudget);
+            resetButton.addEventListener('click', resetBudget);
+            saveButton.addEventListener('click', saveBudget);
+
+            // Try to load saved data
+            loadSavedBudget();
 
             // Initial calculation and chart draw
             updateBudget();
@@ -300,7 +554,6 @@
 
         // Run initialization when the DOM is ready
         document.addEventListener('DOMContentLoaded', initializePlanner);
-
     </script>
 </body>
 </html>
