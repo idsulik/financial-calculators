@@ -141,18 +141,14 @@
                     <p id="monthlyPayment" class="text-3xl font-bold text-indigo-600">$0.00</p>
                     <p class="text-xs text-gray-500">(Principal & Interest)</p>
                 </div>
-                <div class="w-full grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                <div class="w-full grid grid-cols-2 gap-4 text-sm">
                     <div>
                         <p class="text-gray-600">Total Principal Paid</p>
                         <p id="totalPrincipal" class="text-lg font-medium text-gray-800">$0.00</p>
                     </div>
-                    <div>
+                     <div>
                         <p class="text-gray-600">Total Interest Paid</p>
                         <p id="totalInterest" class="text-lg font-medium text-red-600">$0.00</p>
-                    </div>
-                    <div>
-                        <p class="text-gray-600">Loan-to-Interest Ratio</p>
-                        <p id="loanToInterestRatio" class="text-lg font-medium text-blue-600">0:0</p>
                     </div>
                 </div>
                  <p id="calculationError" class="text-red-500 text-sm mt-4 hidden">Please enter valid loan details.</p>
@@ -165,7 +161,6 @@
                 <li><strong>Monthly Payment:</strong> This is the fixed amount you'll pay each month covering only the loan principal and interest. It does *not* include property taxes or homeowner's insurance (escrow).</li>
                 <li><strong>Total Principal Paid:</strong> This should match your original Loan Amount, showing you've paid back the borrowed sum over the term.</li>
                 <li><strong>Total Interest Paid:</strong> This shows the total cost of borrowing the money over the entire loan term. Notice how it can often be a very large number compared to the principal!</li>
-                <li><strong>Loan-to-Interest Ratio:</strong> Shows how much you pay in interest for every dollar borrowed. A lower ratio is better.</li>
                 <li><strong>Chart & Schedule:</strong> These visualize amortization - how each payment gradually shifts from paying mostly interest initially to paying mostly principal later in the loan.</li>
             </ul>
         </section>
@@ -179,22 +174,15 @@
              <p id="chartError" class="text-center text-gray-500 text-sm mt-2 hidden">Calculate loan details to view the chart.</p>
         </div>
 
-        <div class="table-section mb-8"> 
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-semibold text-gray-800">Amortization Schedule</h2>
-                <div class="flex space-x-2">
-                    <button id="showYearlyBtn" class="px-3 py-1 bg-indigo-600 text-white text-sm rounded-md shadow hover:bg-indigo-700 transition focus:outline-none focus:ring-2 focus:ring-indigo-500">Yearly</button>
-                    <button id="showMonthlyBtn" class="px-3 py-1 bg-gray-200 text-gray-800 text-sm rounded-md shadow hover:bg-gray-300 transition focus:outline-none focus:ring-2 focus:ring-gray-400">Monthly</button>
-                </div>
-            </div>
+        <div class="table-section mb-8"> <h2 class="text-xl font-semibold text-gray-800 mb-4">Amortization Schedule (Yearly Summary)</h2>
             <div class="table-container border border-gray-200 rounded-lg overflow-hidden shadow">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" id="periodHeader">Year</th>
+                            <th scope="col">Year</th>
                             <th scope="col">Principal Paid</th>
                             <th scope="col">Interest Paid</th>
-                            <th scope="col" id="totalPaidHeader">Total Paid (Year)</th>
+                            <th scope="col">Total Paid (Year)</th>
                             <th scope="col">Remaining Balance</th>
                         </tr>
                     </thead>
@@ -215,22 +203,11 @@
             </ul>
         </section>
 
-        <div class="mt-8 p-4 border-t border-gray-200 text-sm text-gray-600">
-            <h3 class="font-semibold text-gray-700 mb-2">Mortgage Tips:</h3>
-            <ul class="list-disc list-inside space-y-1">
-                <li><strong>Consider Making Extra Payments:</strong> Even small additional principal payments can significantly reduce your total interest and shorten your loan term.</li>
-                <li><strong>Compare Different Loan Terms:</strong> While 30-year mortgages have lower monthly payments, 15-year loans typically offer lower interest rates and much less total interest paid.</li>
-                <li><strong>Watch Out for Points and Fees:</strong> These upfront costs can significantly impact the true cost of your mortgage.</li>
-                <li><strong>Refinance When It Makes Sense:</strong> If interest rates drop substantially, refinancing could save you money in the long run, even with closing costs.</li>
-                <li><strong>Calculate the Full Housing Payment:</strong> Remember to add property taxes, insurance, and potentially HOA fees to understand your complete monthly housing costs.</li>
-            </ul>
-            <p class="mt-2 italic">Remember: The best mortgage is one that fits comfortably within your budget while helping you build equity in your home.</p>
-        </div>
-
     </div>
 
     <script>
         // --- Basic Mobile Menu Toggle ---
+        // Add this script block (or combine with existing script) in each file
         const btn = document.getElementById('mobile-menu-button');
         const menu = document.getElementById('mobile-menu');
         // Check if elements exist before adding listener
@@ -240,7 +217,7 @@
             });
         }
 
-        // --- Mortgage Calculator JS ---
+        // --- Existing Mortgage Calculator JS ---
         const loanAmountInput = document.getElementById('loanAmount');
         const interestRateInput = document.getElementById('interestRate');
         const loanTermInput = document.getElementById('loanTerm');
@@ -248,57 +225,16 @@
         const monthlyPaymentDisplay = document.getElementById('monthlyPayment');
         const totalPrincipalDisplay = document.getElementById('totalPrincipal');
         const totalInterestDisplay = document.getElementById('totalInterest');
-        const loanToInterestRatioDisplay = document.getElementById('loanToInterestRatio');
         const amortizationTableBody = document.getElementById('amortizationTableBody');
         const chartCtx = document.getElementById('amortizationChart').getContext('2d');
         const calculationError = document.getElementById('calculationError');
         const chartError = document.getElementById('chartError');
-        const showYearlyBtn = document.getElementById('showYearlyBtn');
-        const showMonthlyBtn = document.getElementById('showMonthlyBtn');
-        const periodHeader = document.getElementById('periodHeader');
-        const totalPaidHeader = document.getElementById('totalPaidHeader');
-        
         let amortizationChart;
-        let updateTimeoutId; // For debouncing
-        let currentViewMode = 'yearly'; // Default view mode
-        let calculationData = {
-            monthly: [],
-            yearly: []
-        };
 
         const formatCurrency = (value) => {
             if (!isFinite(value)) { return '$ --'; }
             return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
         };
-        
-        const formatRatio = (principal, interest) => {
-            if (!isFinite(principal) || !isFinite(interest) || principal === 0) { 
-                return '0:0'; 
-            }
-            
-            // Round to one decimal place
-            const ratio = Math.round((interest / principal) * 10) / 10;
-            return `1:${ratio}`;
-        };
-
-        // Debounce function to limit calculation frequency
-        function debouncedUpdate() {
-            clearTimeout(updateTimeoutId);
-            updateTimeoutId = setTimeout(calculateMortgage, 300); // 300ms debounce
-        }
-
-        // Add input event listeners with debounce
-        function setupInputListeners() {
-            const inputs = [
-                loanAmountInput,
-                interestRateInput,
-                loanTermInput
-            ];
-            
-            inputs.forEach(input => {
-                input.addEventListener('input', debouncedUpdate);
-            });
-        }
 
         function calculateMortgage() {
             calculationError.classList.add('hidden');
@@ -315,7 +251,6 @@
                 monthlyPaymentDisplay.textContent = '$0.00';
                 totalPrincipalDisplay.textContent = '$0.00';
                 totalInterestDisplay.textContent = '$0.00';
-                loanToInterestRatioDisplay.textContent = '0:0';
                 amortizationTableBody.innerHTML = '<tr><td colspan="5" class="text-center text-red-500 py-4">Invalid input.</td></tr>';
                 if (amortizationChart) amortizationChart.destroy();
                 chartError.textContent = 'Invalid input. Cannot generate chart.';
@@ -334,7 +269,6 @@
                  monthlyPaymentDisplay.textContent = '$ --';
                  totalPrincipalDisplay.textContent = '$0.00';
                  totalInterestDisplay.textContent = '$0.00';
-                 loanToInterestRatioDisplay.textContent = '0:0';
                  amortizationTableBody.innerHTML = '<tr><td colspan="5" class="text-center text-red-500 py-4">Calculation error.</td></tr>';
                  if (amortizationChart) amortizationChart.destroy();
                  chartError.textContent = 'Calculation error. Cannot generate chart.';
@@ -344,38 +278,22 @@
 
             let balance = principal;
             let totalInterestPaid = 0;
-            
-            // Reset data containers
-            calculationData.monthly = [];
-            calculationData.yearly = [];
-            
+            const yearlyData = [];
             let yearlyPrincipal = 0;
             let yearlyInterest = 0;
 
-            // Calculate monthly amortization data
-            for (let month = 1; month <= numberOfPayments; month++) {
+            for (let i = 1; i <= numberOfPayments; i++) {
                 const interestForMonth = balance * monthlyRate;
                 const principalForMonth = monthlyPayment - interestForMonth;
-                
                 balance -= principalForMonth;
                 totalInterestPaid += interestForMonth;
                 yearlyPrincipal += principalForMonth;
                 yearlyInterest += interestForMonth;
-                
-                // Store monthly data
-                calculationData.monthly.push({
-                    month,
-                    principalPaid: principalForMonth,
-                    interestPaid: interestForMonth,
-                    totalPaid: principalForMonth + interestForMonth,
-                    endBalance: balance < 0.01 ? 0 : balance
-                });
 
-                // Store yearly data at the end of each year or loan term
-                if (month % 12 === 0 || month === numberOfPayments) {
-                    const year = Math.ceil(month / 12);
-                    calculationData.yearly.push({
-                        year,
+                if (i % 12 === 0 || i === numberOfPayments) {
+                    const year = Math.ceil(i / 12);
+                    yearlyData.push({
+                        year: year,
                         principalPaid: yearlyPrincipal,
                         interestPaid: yearlyInterest,
                         totalPaid: yearlyPrincipal + yearlyInterest,
@@ -386,163 +304,75 @@
                 }
             }
 
-            // Update summary displays
             monthlyPaymentDisplay.textContent = formatCurrency(monthlyPayment);
             totalPrincipalDisplay.textContent = formatCurrency(principal);
             totalInterestDisplay.textContent = formatCurrency(totalInterestPaid);
-            loanToInterestRatioDisplay.textContent = formatRatio(principal, totalInterestPaid);
 
-            // Update table and chart based on current view mode
-            updateAmortizationTable();
-            updateAmortizationChart();
-        }
-
-        function updateAmortizationTable() {
             amortizationTableBody.innerHTML = ''; // Clear previous content
-            
-            const data = currentViewMode === 'yearly' ? calculationData.yearly : calculationData.monthly;
-            if (!data || data.length === 0) {
-                amortizationTableBody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-4">No data available.</td></tr>';
-                return;
-            }
-            
-            // Update header text based on view mode
-            periodHeader.textContent = currentViewMode === 'yearly' ? 'Year' : 'Month';
-            totalPaidHeader.textContent = currentViewMode === 'yearly' ? 'Total Paid (Year)' : 'Total Paid (Month)';
-            
-            // Build table rows
-            data.forEach(item => {
-                const period = currentViewMode === 'yearly' ? item.year : item.month;
+            yearlyData.forEach(data => {
                 const row = `
                     <tr>
-                        <td>${period}</td>
-                        <td>${formatCurrency(item.principalPaid)}</td>
-                        <td>${formatCurrency(item.interestPaid)}</td>
-                        <td>${formatCurrency(item.totalPaid)}</td>
-                        <td>${formatCurrency(item.endBalance)}</td>
+                        <td>${data.year}</td>
+                        <td>${formatCurrency(data.principalPaid)}</td>
+                        <td>${formatCurrency(data.interestPaid)}</td>
+                        <td>${formatCurrency(data.totalPaid)}</td>
+                        <td>${formatCurrency(data.endBalance)}</td>
                     </tr>
                 `;
                 amortizationTableBody.innerHTML += row;
             });
+
+            updateAmortizationChart(yearlyData);
         }
 
-        function updateAmortizationChart() {
-            const data = calculationData.yearly; // Always use yearly data for the chart
-            
-            if (!data || data.length === 0) {
+        function updateAmortizationChart(yearlyData) {
+            if (!yearlyData || yearlyData.length === 0) {
                 if (amortizationChart) amortizationChart.destroy();
                 chartError.textContent = 'No data to display in chart.';
                 chartError.classList.remove('hidden');
                 return;
             }
-            chartError.classList.add('hidden');
+             chartError.classList.add('hidden');
 
-            const labels = data.map(item => `Year ${item.year}`);
-            const principalPaidData = data.map(item => item.principalPaid);
-            const interestPaidData = data.map(item => item.interestPaid);
+            const labels = yearlyData.map(data => `Year ${data.year}`);
+            const principalPaidData = yearlyData.map(data => data.principalPaid);
+            const interestPaidData = yearlyData.map(data => data.interestPaid);
 
             const chartData = {
                 labels: labels,
                 datasets: [
-                    { 
-                        label: 'Principal Paid', 
-                        data: principalPaidData, 
-                        backgroundColor: 'rgba(79, 70, 229, 0.7)', 
-                        borderColor: 'rgba(79, 70, 229, 1)', 
-                        borderWidth: 1, 
-                        stack: 'payments' 
-                    },
-                    { 
-                        label: 'Interest Paid', 
-                        data: interestPaidData, 
-                        backgroundColor: 'rgba(220, 38, 38, 0.6)', 
-                        borderColor: 'rgba(220, 38, 38, 1)', 
-                        borderWidth: 1, 
-                        stack: 'payments' 
-                    }
+                    { label: 'Principal Paid', data: principalPaidData, backgroundColor: 'rgba(79, 70, 229, 0.7)', borderColor: 'rgba(79, 70, 229, 1)', borderWidth: 1, stack: 'payments' },
+                    { label: 'Interest Paid', data: interestPaidData, backgroundColor: 'rgba(220, 38, 38, 0.6)', borderColor: 'rgba(220, 38, 38, 1)', borderWidth: 1, stack: 'payments' }
                 ]
             };
-            
             const chartOptions = {
-                responsive: true, 
-                maintainAspectRatio: false,
-                animation: {
-                    duration: 300 // Faster animations
-                },
-                scales: { 
-                    x: { 
-                        stacked: true, 
-                        title: { 
-                            display: true, 
-                            text: 'Year' 
-                        },
-                        ticks: {
-                            maxRotation: 0, // Horizontal labels
-                            autoSkip: true, // Skip labels that would overlap
-                            maxTicksLimit: 15 // Maximum number of ticks to display
-                        }
-                    }, 
-                    y: { 
-                        stacked: true, 
-                        beginAtZero: true, 
-                        title: { 
-                            display: true, 
-                            text: 'Amount Paid ($)' 
-                        }, 
-                        ticks: { 
-                            callback: function(value) { return formatCurrency(value); },
-                            maxTicksLimit: 8 // Limit number of ticks for better readability
-                        } 
-                    } 
-                },
-                plugins: { 
-                    tooltip: { 
-                        mode: 'index', 
-                        intersect: false, 
-                        callbacks: { 
-                            label: function(context) { 
-                                let label = context.dataset.label || ''; 
-                                if (label) { label += ': '; } 
-                                if (context.parsed.y !== null) { 
-                                    label += formatCurrency(context.parsed.y); 
-                                } 
-                                return label; 
-                            }, 
-                            footer: function(tooltipItems) { 
-                                let sum = 0; 
-                                tooltipItems.forEach(function(tooltipItem) { 
-                                    sum += tooltipItem.parsed.y; 
-                                }); 
-                                return 'Total Paid (Year): ' + formatCurrency(sum); 
-                            } 
-                        } 
-                    }, 
-                    legend: { 
-                        position: 'top',
-                        labels: {
-                            boxWidth: 12, // Smaller legend items
-                            padding: 10
-                        }
-                    } 
-                },
-                interaction: { 
-                    mode: 'nearest', 
-                    axis: 'x', 
-                    intersect: false 
-                }
+                responsive: true, maintainAspectRatio: false,
+                scales: { x: { stacked: true, title: { display: true, text: 'Year' } }, y: { stacked: true, beginAtZero: true, title: { display: true, text: 'Amount Paid ($)' }, ticks: { callback: function(value) { return formatCurrency(value); } } } },
+                plugins: { tooltip: { mode: 'index', intersect: false, callbacks: { label: function(context) { let label = context.dataset.label || ''; if (label) { label += ': '; } if (context.parsed.y !== null) { label += formatCurrency(context.parsed.y); } return label; }, footer: function(tooltipItems) { let sum = 0; tooltipItems.forEach(function(tooltipItem) { sum += tooltipItem.parsed.y; }); return 'Total Paid (Year): ' + formatCurrency(sum); } } }, legend: { position: 'top' } },
+                 interaction: { mode: 'index', intersect: false }
             };
 
-            // Efficiently update or create chart
-            if (amortizationChart) {
-                // Update existing chart (faster than destroying and recreating)
-                amortizationChart.data.labels = chartData.labels;
-                amortizationChart.data.datasets = chartData.datasets;
-                amortizationChart.update('none');
-            } else {
-                // Create new chart
-                amortizationChart = new Chart(chartCtx, { 
-                    type: 'bar', 
-                    data: chartData, 
-                    options: chartOptions 
-                });
-            }
+            if (amortizationChart) { amortizationChart.destroy(); }
+            amortizationChart = new Chart(chartCtx, { type: 'bar', data: chartData, options: chartOptions });
+        }
+
+        // --- Event Listeners ---
+        if (calculateBtn) {
+             calculateBtn.addEventListener('click', calculateMortgage);
+        }
+
+        // --- Initial State ---
+        document.addEventListener('DOMContentLoaded', () => {
+            monthlyPaymentDisplay.textContent = '$0.00';
+            totalPrincipalDisplay.textContent = '$0.00';
+            totalInterestDisplay.textContent = '$0.00';
+            amortizationTableBody.innerHTML = '<tr><td colspan="5" class="text-center text-gray-500 py-4">Enter loan details and click Calculate.</td></tr>';
+            chartError.textContent = 'Enter loan details and click Calculate to view the chart.';
+            chartError.classList.remove('hidden');
+            calculateMortgage();
+        });
+
+    </script>
+
+</body>
+</html>
